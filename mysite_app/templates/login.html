@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    {% load static %}
+</head>
+
+      
+<body>
+    <h1 class="header">LOGIN</h1>
+   
+
+
+<style>
+   
+        
+    .header{
+        text-align: center;
+        padding-top:50px ;
+        margin-bottom: 20px;
+
+    } 
+    body{
+            background-image: url("{% static 'slider.png' %}");
+            background-attachment: fixed;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            font-family: Arial,sans-serif;
+            margin: 0px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        
+        }  
+     
+    
+           
+    form{
+        max-width: 400px;
+        width: 100%;
+        text-align: center;
+        padding: 20px;
+        background-color: rgba(255, 255, 255, 0.8);
+        border: 1px solid black;
+        border-radius: 5px;
+
+
+    }
+    label{
+        font-weight: bold;
+        display: block;
+        background-color: white;
+        text-align: left;
+        border: 1px solid white;
+            
+        margin-bottom: 5px;
+    }
+    input{
+        width: 90%;
+        padding: 10px;
+        margin-top: 5px;
+        margin-bottom: 20px;
+        boder: 1px solid #ccc;
+        border-radius: 8px;
+    }
+    button{
+        background-color: green;
+        padding: 10px 20px;
+        width: 30px;
+        color: blaack;
+        border-radius: 8px;
+        text-align: left;
+
+        }
+        a{
+            text-decoration: none;
+            font-weight: bold;
+            background-color: chocolate;
+            border-radius: 30px;
+            color: black;
+
+        }
+</style>
+
+<form method="POST">
+
+    {% csrf_token %}
+     <label for="username">username:</label>
+    <input
+        type="text"
+        name="username"
+        placeholder="Username"
+    >
+
+    <br><br>
+     
+    <label for="password">password:</label>
+    <input
+        type="password"
+        name="password"
+        placeholder="Password"
+    >
+
+    <br><br>
+
+    <button type="submit">
+        Login
+    </button>
+
+</form>
+
+<p>{{ error }}</p>
+<div style="margin-top: 15px; text-align: center;">
+    <p>no user account? <a href="{% url 'signup' %}" style="color: black;">signin here</a></p>
+</div>
+
+</body>
+</html>

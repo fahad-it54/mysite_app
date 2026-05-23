@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <title>Student Profile</title>
+</head>
+
+<body class="bg-gray-100">
+
+    <!-- Main Container -->
+    <div class="min-h-screen flex">
+
+        <!-- Sidebar -->
+        <div class="w-64 bg-blue-700 text-white p-6">
+
+            <h1 class="text-2xl font-bold mb-10">
+                Student Portal
+            </h1>
+
+            <ul class="space-y-4">
+
+                <li>
+                    <a href="#" class="block hover:bg-blue-600 p-3 rounded-lg">
+                        Dashboard
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#" class="block hover:bg-blue-600 p-3 rounded-lg">
+                        My Results
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#" class="block hover:bg-blue-600 p-3 rounded-lg">
+                        Subjects
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#" class="block hover:bg-blue-600 p-3 rounded-lg">
+                        Logout
+                    </a>
+                </li>
+
+            </ul>
+
+        </div>
+
+        <!-- Content -->
+        <div class="flex-1 p-8">
+            {% if user_profile %}
+
+
+            <!-- Top Profile Card -->
+            <div class="bg-white shadow-lg rounded-2xl p-6 flex items-center gap-6">
+
+                <!-- Profile Image -->
+                <img
+                    src="{% url 'edit_profile' %}"
+                    class="w-24 h-24 rounded-full border-4 border-blue-500"
+                >
+
+                <!-- Student Details -->
+                <div>
+
+                    <h2 class="text-2xl font-bold text-gray-800">
+                        {{ student.username }}
+                    </h2>
+
+                    <p class="text-gray-600 mt-1">
+                        Admission Number:
+                        <span class="font-semibold">
+                            {{ user_profile.admission_number}}
+                        </span>
+                    </p>
+
+                    <p class="text-gray-600">
+                        Class:
+                        <span class="font-semibold">
+                            {{ user_profile.student_class }}
+                        </span>
+                    </p>
+
+                    <p class="text-gray-600">
+                        Email:
+                        <span class="font-semibold">
+                            {{user_profile.email}}
+                        </span>
+                    </p>
+                    {% else %}
+
+                     <div class="bg-red-100 text-red-700 p-4 rounded-lg">
+
+                        No profile available
+                    </div>
+
+                     {% endif %}
+
+
+                </div>
+
+            </div>
+
+            <!-- Subjects Section -->
+            <div class="mt-8 bg-white shadow-lg rounded-2xl p-6">
+
+                <h3 class="text-xl font-bold text-gray-800 mb-4">
+                    Subjects
+                </h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+                    {% for subject in subjects %}
+
+                    <div class="bg-blue-50 p-4 rounded-xl border border-blue-100">
+
+                        <h4 class="text-lg font-semibold text-blue-700">
+                            {{ subject.subject.name }}
+                        </h4>
+
+                        <p class="text-gray-600 mt-2">
+                            Score:
+                            <span class="font-bold">
+                                {{ subject.score }}
+                            </span>
+                        </p>
+
+                        <p class="text-gray-600">
+                            Grade:
+                            <span class="font-bold text-green-600">
+                                {{ subject.grade }}
+                            </span>
+                        </p>
+
+                    </div>
+
+                    
+                  {% empty %}
+
+                   <div class="bg-yellow-100 text-yellow-700 p-4 rounded-lg">
+
+                     No results uploaded
+                       
+                   </div>
+                   {% endfor %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

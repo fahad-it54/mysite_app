@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Signup</title>
+</head>
+<body>
+    <style>
+        body{
+            width: 50%;
+            height: 60%;
+            justify-content: center;
+            display: flex;
+        }
+    .form-container {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 10px;
+    font-family: Arial, sans-serif;
+}
+
+/* Ku-style vile vi-box vya kuandikia */
+input[type="text"], input[type="password"], input[type="email"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: block;
+}
+
+/* Ku-style kile kitufe cha Sign Up */
+button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+}
+
+/* Kuficha au ku-style maelezo ya password (help text) */
+.helptext {
+    font-size: 12px;
+    color: #666;
+    display: block;
+    margin-bottom: 10px;
+}
+
+    </style>
+<div class="from-container">
+<h1>CREATE ACCOUNT</h1>
+
+<form method="POST">
+
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <button type="submit">
+        SIGN UP
+    </button>
+
+</form>
+</div>
+
+<a href="/">Already have account? Login</a>
+
+</body>
+</html>

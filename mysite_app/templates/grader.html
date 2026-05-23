@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <title>Student Result Form</title>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+
+    <div class="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md">
+
+        <h1 class="text-2xl font-bold text-center text-blue-600 mb-6">
+            Student Result Checker
+        </h1>
+
+        <form method="POST" class="space-y-4">
+            {% csrf_token %}
+
+            <!-- Student Name -->
+            <div>
+                <label class="block text-gray-700 mb-2">
+                    Student Name
+                </label>
+
+                <input
+                    type="text"
+                    name="student_name"
+                    placeholder="Enter student name"
+                    class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                >
+            </div>
+
+            <!-- Score -->
+            <div>
+                <label class="block text-gray-700 mb-2">
+                    Test Score
+                </label>
+
+                <input
+                    type="number"
+                    name="score"
+                    placeholder="Enter score"
+                    class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                >
+            </div>
+
+            <!-- Submit Button -->
+            <button
+                type="submit"
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition duration-300"
+            >
+                Submit Result
+            </button>
+        </form>
+
+        <!-- Output -->
+        {% if grade %}
+        <div class="mt-6 bg-gray-50 p-4 rounded-lg">
+
+            <h2 class="text-lg font-semibold text-gray-800">
+                Result
+            </h2>
+
+            <p class="mt-2">
+                <span class="font-bold">Student:</span>
+                {{ student_name }}
+            </p>
+
+            <p>
+                <span class="font-bold">Score:</span>
+                {{ score }}
+            </p>
+
+            <p>
+                <span class="font-bold">Grade:</span>
+                <span class="text-blue-600 font-bold">
+                    {{ grade }}
+                </span>
+            </p>
+
+        </div>
+        {% endif %}
+
+    </div>
+
+</body>
+</html>
