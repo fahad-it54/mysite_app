@@ -2,4 +2,4 @@ django
 gunicorn
 whitenoise
 django-crispy-forms
-crispy-bootstrap4
+crispy-bootstrap5
