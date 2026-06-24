@@ -82,7 +82,7 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 import dj_database_url
 DATABASES = {
     'default': dj_database_url.config(
-        default='postgresql://fahad:oCdpzzoFTZSHhKfijABe7oksQFYO8RVd@dpg-d89n6837uimc739oaqt0-a.ohio-postgres.render.com/aoutomatical',
+        default='postgresql://fahad_daug_user:764RrB4TcVwzCDk89glxM0Oqm9gOFFTi@dpg-d8u0isuq1p3s73fs1pf0-a.ohio-postgres.render.com/fahad_daug',
         conn_max_age=600,
         ssl_require=True,
         )

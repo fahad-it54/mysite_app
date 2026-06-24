@@ -14,7 +14,7 @@ class Profile(models.Model):
 
     profile_picture = models.ImageField(
         upload_to='profile_pics/',
-        default='default.jpg'
+        default='default.png'
     )
 
     bio = models.TextField(blank=True)
