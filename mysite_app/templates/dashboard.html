@@ -99,7 +99,7 @@ li{
         <img src="{{ user.profile.profile_pics.url }}" alt="Profile Picture" style="width: 50px; height: 50px; border-radius: 50%;">
          {% else %}
          <a href="{% url 'edit_profile' %}">
-        <img  src="/static/slider.png/" alt="Default Picture style=" style="width: 50px; height: 50px; border-radius: 50%; align-items: right; display: flex; flex-direction: column; width: fit-content;">
+        <img  src="/static/slider.png/" alt="Default" style="width: 50px; height: 50px; border-radius: 50%; align-items: right; display: flex; flex-direction: column; width: fit-content;">
          {% endif %}
      </a>
         <p class="p">Welcome, {{ user.username }}</p>
