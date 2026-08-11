@@ -2,9 +2,10 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
-from .forms import ProfileForm
+from .forms import ProfileForm, StudentEditForm
 from .models import Profile
 from .models import StudentProfile, Subject, Result
+from .models import Profile, StudentProfile
 
 
 # LOGIN PAGE
@@ -62,24 +63,26 @@ def signup_view(request):
 @login_required
 def dashboard(request):
     profile, created= Profile.objects.get_or_create(user=request.user)
+    student, created= StudentProfile.objects.get_or_create(user=request.user)
 
-    return render(request, 'dashboard.html',{'profile':profile})
+    return render(request, 'dashboard.html',{'profile':profile, 'student': student,})
 @login_required
 def edit_profile(request):
-     
-    profile, created= Profile.objects.get_or_create(user=request.user)
+    profile, _ = Profile.objects.get_or_create(user=request.user)
+    student, _ = StudentProfile.objects.get_or_create(user=request.user)
 
-
-    if request.method == "POST":
-        form = ProfileForm(request.POST, request.FILES, instance=profile)
-        if form.is_valid():
-            form.save()
-            return redirect("dashboard")
+    if request.method == 'POST':
+        pform = ProfileForm(request.POST, request.FILES, instance=profile)
+        sform = StudentEditForm(request.POST, instance=student)
+        if pform.is_valid() and sform.is_valid():
+            pform.save()
+            sform.save()
+            return redirect('dashboard')
     else:
-        form = ProfileForm(instance=profile)
+        pform = ProfileForm(instance=profile)
+        sform = StudentEditForm(instance=student)
 
-    return render(request, "edit_profile.html", {"form": form})
-
+    return render(request, 'edit_profile.html', {'pform': pform, 'sform': sform})
 
 def grader_view(request):
 
@@ -134,3 +137,14 @@ def profile_view(request):
     })
 def Courses_view(request):
     return render(request, 'Courses.html')
+
+@login_required
+def payment(request):
+    student, _ = StudentProfile.objects.get_or_create(user=request.user)
+    return render(request, 'payment.html', {'student': student})
+
+@login_required
+def results(request):
+    student_profile, created = StudentProfile.objects.get_or_create(user=request.user)
+    student_results = Result.objects.filter(student=request.user).select_related('subject')
+    return render(request, 'user_profile.html', {'results': student_results})

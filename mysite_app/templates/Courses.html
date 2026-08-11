@@ -1,153 +1,206 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="sw">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Matokeo ya Masomo</title>
-
+<title>Masomo</title>
 <style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', Arial, sans-serif; }
 
-body{
-    font-family: Arial, sans-serif;
-    background:#f4f4f4;
-    padding:40px;
-}
+  body {
+    min-height:100vh;
+    background: linear-gradient(135deg, #eef2fb, #f7f9ff);
+    padding:30px 16px;
+    display:flex;
+    justify-content:center;
+  }
 
-/* CONTAINER */
-.table-container{
-    display: flex;
-    flex-direction: column;
-    width:700px;
-    margin:auto;
-    background:white;
-    padding:20px;
+  .wrap { width:100%; max-width:820px; }
+
+  .header {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:18px;
+  }
+  .header .title-block h1 {
+    font-size:22px;
+    color:#1a2560;
+    margin-bottom:4px;
+  }
+  .header .title-block p {
+    font-size:13px;
+    color:#888;
+  }
+  .header .count-badge {
+    background:#e8edff;
+    color:#3a5bd9;
+    font-weight:700;
+    font-size:13px;
+    padding:8px 16px;
+    border-radius:20px;
+  }
+
+  .card {
+    background:#fff;
+    border-radius:18px;
+    box-shadow:0 12px 30px rgba(30,42,107,0.08);
+    overflow:hidden;
+  }
+
+  .course-row {
+    display:flex;
+    align-items:center;
+    gap:16px;
+    padding:16px 22px;
+    border-bottom:1px solid #f0f2fa;
+    transition:background .15s ease;
+  }
+  .course-row:last-child { border-bottom:none; }
+  .course-row:hover { background:#f8faff; }
+
+  .course-icon {
+    width:44px;
+    height:44px;
+    flex-shrink:0;
     border-radius:12px;
-    box-shadow:0 4px 15px rgba(0,0,0,0.1);
-}
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:18px;
+    font-weight:700;
+    color:#fff;
+  }
 
-/* TITLE */
-h2{
+  /* Rangi tofauti za icons kwa mfululizo */
+  .course-row:nth-child(6n+1) .course-icon { background:linear-gradient(135deg,#3a5bd9,#6c8cff); }
+  .course-row:nth-child(6n+2) .course-icon { background:linear-gradient(135deg,#1a9a55,#4ecdc4); }
+  .course-row:nth-child(6n+3) .course-icon { background:linear-gradient(135deg,#e67e22,#f4b942); }
+  .course-row:nth-child(6n+4) .course-icon { background:linear-gradient(135deg,#8b5cf6,#c084fc); }
+  .course-row:nth-child(6n+5) .course-icon { background:linear-gradient(135deg,#c0392b,#ff7a6b); }
+  .course-row:nth-child(6n+6) .course-icon { background:linear-gradient(135deg,#0e7c86,#38b6cc); }
+
+  .course-info { flex:1; min-width:0; }
+  .course-info .name {
+    font-size:15px;
+    font-weight:700;
+    color:#1a1a1a;
+    margin-bottom:3px;
+  }
+  .course-info .code {
+    font-size:12px;
+    color:#999;
+    letter-spacing:.3px;
+  }
+
+  .point-pill {
+    flex-shrink:0;
+    background:#f0f7f2;
+    color:#1a9a55;
+    font-weight:700;
+    font-size:13px;
+    padding:6px 14px;
+    border-radius:20px;
+    min-width:44px;
     text-align:center;
-    margin-bottom:20px;
-    color:#222;
-}
+  }
 
-/* TABLE */
-table{
-    width:100%;
-    border-collapse:collapse;
-}
+  .footer-note {
+    text-align:center;
+    font-size:12px;
+    color:#aaa;
+    margin-top:20px;
+  }
 
-/* HEADER */
-thead{
-    background:#3B7BF6;
-    color:white;
-}
-
-th{
-    padding:14px;
-    text-align:left;
-    font-size:14px;
-}
-
-/* BODY */
-td{
-    padding:14px;
-    border-bottom:1px solid #ddd;
-    color:#333;
-    font-weight: bold;
-
-}
-
-/* ROW HOVER */
-tbody tr:hover{
-    background:#f1f5ff;
-}
-
-/* POINT STYLE */
-.point{
-    font-weight:bold;
-    color:green;
-}
-footer{
-    font-weight: bold;
-    text-align: center;
-    border: #333;
-    padding: 20px;
-    background-color: white;
-    margin: 50px;
-   
-}
-
+  @media (max-width:480px) {
+    .course-row { padding:14px 16px; gap:12px; }
+    .course-icon { width:38px; height:38px; font-size:15px; }
+  }
 </style>
 </head>
 <body>
 
-<div class="table-container">
+<div class="wrap">
 
-    <h2>Student Courses</h2>
+  <div class="header">
+    <div class="title-block">
+      <h1>My courses</h1>
+      <p>List of all subject and point</p>
+    </div>
+    <div class="count-badge">7 Subject</div>
+  </div>
 
-    <table>
+  <div class="card">
 
-        <thead>
-            <tr>
-                <th>Subject</th>
-                <th>Code</th>
-                <th>Point</th>
-            </tr>
-        </thead>
+    <div class="course-row">
+      <div class="course-icon">Fp</div>
+      <div class="course-info">
+        <div class="name">Fondation of Programming</div>
+        <div class="code">INF041</div>
+      </div>
+      <div class="point-pill">15</div>
+    </div>
 
-        <tbody>
+    <div class="course-row">
+      <div class="course-icon">Oj</div>
+      <div class="course-info">
+        <div class="name">OOP JAVA</div>
+        <div class="code">INF021</div>
+      </div>
+      <div class="point-pill">10</div>
+    </div>
 
-            <tr>
-                <td>Fondation of Programming</td>
-                <td>INF041</td>
-                <td class="point">15</td>
-            </tr>
+    <div class="course-row">
+      <div class="course-icon">Ac</div>
+      <div class="course-info">
+        <div class="name">Accountant</div>
+        <div class="code">INF011</div>
+      </div>
+      <div class="point-pill">10</div>
+    </div>
 
-            <tr>
-                <td>OOP JAVA</td>
-                <td>INF021</td>
-                <td class="point">10</td>
-            </tr>
+    <div class="course-row">
+      <div class="course-icon">Sa</div>
+      <div class="course-info">
+        <div class="name">System Analysis and Designer</div>
+        <div class="code">INF033</div>
+      </div>
+      <div class="point-pill">10</div>
+    </div>
 
-            <tr>
-                <td>Accountant</td>
-                <td>INF011</td>
-                <td class="point">10</td>
-            </tr>
+    <div class="course-row">
+      <div class="course-icon">Pc</div>
+      <div class="course-info">
+        <div class="name">PC Maintenance</div>
+        <div class="code">INF055</div>
+      </div>
+      <div class="point-pill">10</div>
+    </div>
 
-            <tr>
-                <td>System Analysis and Designer</td>
-                <td>INF033</td>
-                <td class="point">10</td>
-            </tr>
-             <tr>
-                <td>PC Mantances</td>
-                <td>INF055</td>
-                <td class="point">10</td>
-            </tr>
-             <tr>
-                <td>Ethical Gorvernance</td>
-                <td>INF44</td>
-                <td class="point">10</td>
-            </tr>
-             <tr>
-                <td>Field Training</td>
-                <td>INF44</td>
-                <td class="point">5</td>
-            </tr>
+    <div class="course-row">
+      <div class="course-icon">Eg</div>
+      <div class="course-info">
+        <div class="name">Ethical Governance</div>
+        <div class="code">INF44</div>
+      </div>
+      <div class="point-pill">10</div>
+    </div>
 
-        </tbody>
+    <div class="course-row">
+      <div class="course-icon">Ft</div>
+      <div class="course-info">
+        <div class="name">Field Training</div>
+        <div class="code">INF44</div>
+      </div>
+      <div class="point-pill">5</div>
+    </div>
 
-    </table>
+  </div>
+
+  <div class="footer-note">© Copyright 2026</div>
 
 </div>
-
-
-<footer>
-  &copy:  copyright 2026
-</footer>
 
 </body>
 </html>

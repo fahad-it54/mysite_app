@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Malipo</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', Arial, sans-serif; }
+  body { background:#f4f6fa; display:flex; align-items:center; justify-content:center; min-height:100vh; padding:20px; }
+  .box { background:#fff; border-radius:14px; padding:28px; max-width:420px; width:100%; box-shadow:0 1px 3px rgba(0,0,0,.06); }
+  .box h2 { font-size:18px; margin-bottom:10px; color:#222; }
+  .box p { font-size:14px; color:#555; margin-bottom:10px; line-height:1.5; }
+  .info-box { background:#f7f8fb; border-radius:10px; padding:14px; margin:16px 0; font-size:14px; }
+  .info-box b { display:block; margin-bottom:4px; color:#26348f; }
+  .status { font-size:13px; font-weight:600; padding:6px 12px; border-radius:20px; display:inline-block; margin-bottom:14px; }
+  .status.paid { background:#e3f9ec; color:#1a9a55; }
+  .status.unpaid { background:#fdeaea; color:#c0392b; }
+  .btn-back { display:inline-block; margin-top:16px; color:#26348f; text-decoration:none; font-size:13px; font-weight:600; }
+</style>
+</head>
+<body>
+
+<div class="box">
+  <h2>Malipo ya usajili</h2>
+
+  {% if student.is_paid %}
+    <div class="status paid">Umeshalipia</div>
+    <p>Malipo yako yamepokelewa. Subiri admin athibitishe taarifa zako.</p>
+  {% else %}
+    <div class="status unpaid">Bado hujalipia</div>
+    <p>Tafadhali kamilisha malipo ya usajili ili taarifa zako za kitaaluma zionekane kwenye dashboard.</p>
+
+    <div class="info-box">
+      <b>Namna ya kulipa</b>
+      Tuma malipo kupitia M-Pesa/Tigo Pesa namba: <b>XXX-XXX-XXX</b><br>
+      Jina la mpokeaji: <b>Jina la Shule/Kampuni</b><br>
+      Baada ya kulipa, peleka risiti ofisini au kwa admin ili athibitishe.
+    </div>
+  {% endif %}
+
+  <a href="{% url 'dashboard' %}" class="btn-back">&larr; Rudi Dashboard</a>
+</div>
+
+</body>
+</html>

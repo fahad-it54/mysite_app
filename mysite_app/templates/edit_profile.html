@@ -1,33 +1,287 @@
-{% load crispy_forms_tags %}
+{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="sw">
 <head>
-    <title>Edit Profile</title>
-    <!-- CSS ya Bootstrap ili fomu iwe na rangi na muundo mzuri -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edit Profile</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', Arial, sans-serif; }
 
-    <div class="container mt-5">
-        <div class="card shadow p-4 mx-auto" style="max-width: 600px;">
-            <h2 class="mb-4">Edit Profile</h2>
-            
-            <form method="POST" enctype="multipart/form-data">
-                {% csrf_token %}
-                
-                <!-- Hii ndiyo itakayopamba fomu yako -->
-                {{ form|crispy }}
-                
-                <div class="mt-4">
-                    <button type="submit" class="btn btn-success w-100">Save Changes</button>
-                </div>
-            </form>
-            
-            <div class="mt-3 text-center">
-                <a href="{% url 'dashboard' %}" class="text-secondary text-decoration-none">Back to Dashboard</a>
-            </div>
-        </div>
+  /* Tunaruhusu ukurasa mzima uweze kuscroll */
+  html, body {
+    min-height: 100vh;
+    overflow-y: auto !important; /* Inalazimisha scrolling kufanya kazi */
+  }
+
+  body {
+    background: linear-gradient(135deg, #1e2a6b, #3a5bd9 45%, #6c8cff);
+    background-attachment: fixed; /* Inazuia background gradient isikatike unaposcroll */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 16px;
+    position: relative;
+  }
+
+  /* Vitu vya mapambo ya background */
+  body::before, body::after {
+    content:'';
+    position:fixed; /* Imewekwa fixed ili zisitembee unaposcroll */
+    border-radius:50%;
+    filter:blur(60px);
+    opacity:.35;
+  }
+  body::before {
+    width:320px; height:320px;
+    background:#8fa8ff;
+    top:-80px; left:-80px;
+  }
+  body::after {
+    width:280px; height:280px;
+    background:#4ecdc4;
+    bottom:-60px; right:-60px;
+  }
+
+  .card {
+    position:relative;
+    z-index:1;
+    background:rgba(255,255,255,0.92);
+    backdrop-filter:blur(10px);
+    border-radius:22px;
+    padding:36px 30px 28px;
+    max-width:440px;
+    width:100%;
+    box-shadow:0 20px 50px rgba(15,25,80,0.35);
+    animation:cardIn .5s ease;
+    margin: auto; /* Inaweka kadi katikati vizuri */
+  }
+
+  @keyframes cardIn {
+    from { opacity:0; transform:translateY(18px) scale(.98); }
+    to { opacity:1; transform:translateY(0) scale(1); }
+  }
+
+  .card h2 {
+    text-align:center;
+    font-size:20px;
+    color:#1a2560;
+    margin-bottom:6px;
+  }
+  .card .sub {
+    text-align:center;
+    font-size:13px;
+    color:#888;
+    margin-bottom:22px;
+  }
+
+  /* Avatar upload */
+  .avatar-wrap {
+    display:flex;
+    justify-content:center;
+    margin-bottom:24px;
+  }
+  .avatar-circle {
+    position:relative;
+    width:110px;
+    height:110px;
+    border-radius:50%;
+    overflow:hidden;
+    border:4px solid #fff;
+    box-shadow:0 8px 24px rgba(58,91,217,.35);
+    cursor:pointer;
+    background:#e9edfb;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .avatar-circle img {
+    width:100%; height:100%; object-fit:cover;
+  }
+  .avatar-circle .placeholder-icon {
+    font-size:34px; color:#a9b4e6;
+  }
+  .avatar-overlay {
+    position:absolute;
+    inset:0;
+    background:rgba(30,42,107,0.55);
+    color:#fff;
+    font-size:11px;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    opacity:0;
+    transition:opacity .2s ease;
+    text-align:center;
+    padding:8px;
+  }
+  .avatar-circle:hover .avatar-overlay { opacity:1; }
+
+  /* Fields - muonekano wa Django form fields (as_p) */
+  form p { margin:0 0 18px; }
+  form p label {
+    display:block;
+    font-size:12px;
+    font-weight:700;
+    color:#3a4270;
+    letter-spacing:.4px;
+    margin-bottom:6px;
+    text-transform:uppercase;
+  }
+  form input[type="text"],
+  form input[type="email"],
+  form textarea,
+  form select {
+    width:100%;
+    padding:12px 14px;
+    border:1.5px solid #e1e5f5;
+    border-radius:10px;
+    font-size:14px;
+    color:#222;
+    background:#fbfcff;
+    transition:border-color .2s ease, box-shadow .2s ease, transform .15s ease;
+  }
+  form input[type="text"]:focus,
+  form input[type="email"]:focus,
+  form textarea:focus,
+  form select:focus {
+    outline:none;
+    border-color:#3a5bd9;
+    box-shadow:0 0 0 4px rgba(58,91,217,.12);
+    transform:translateY(-1px);
+  }
+  form textarea { resize:vertical; min-height:80px; }
+
+  /* Ficha input ya file ya kawaida na maandishi ya default ya Django */
+  form input[type="file"] { display:none; }
+  form p a, form p label[for$="-clear_id"] { display: none !important; }
+
+  .helptext, .errorlist { display:none; }
+
+  button[type="submit"] {
+    width:100%;
+    margin-top:6px;
+    padding:13px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(135deg,#3a5bd9,#5b7bff);
+    color:#fff;
+    font-size:15px;
+    font-weight:700;
+    letter-spacing:.3px;
+    cursor:pointer;
+    box-shadow:0 10px 24px rgba(58,91,217,.35);
+    transition:transform .15s ease, box-shadow .15s ease, opacity .15s ease;
+  }
+  button[type="submit"]:hover {
+    transform:translateY(-2px);
+    box-shadow:0 14px 30px rgba(58,91,217,.45);
+  }
+  button[type="submit"]:active {
+    transform:translateY(0);
+  }
+
+  .back-link {
+    display:block;
+    text-align:center;
+    margin-top:16px;
+    font-size:13px;
+    color:#6b7399;
+    text-decoration:none;
+  }
+  .back-link:hover { color:#3a5bd9; }
+
+  .toast {
+    position:fixed;
+    top:20px;
+    left:50%;
+    transform:translateX(-50%) translateY(-20px);
+    background:#1a9a55;
+    color:#fff;
+    padding:10px 20px;
+    border-radius:30px;
+    font-size:13px;
+    font-weight:600;
+    opacity:0;
+    pointer-events:none;
+    transition:all .3s ease;
+    z-index:10;
+  }
+  .toast.show {
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h2>Hariri Profile</h2>
+  <div class="sub">Sasisha picha yako na taarifa binafsi</div>
+
+  <form method="post" enctype="multipart/form-data" id="editForm">
+    {% csrf_token %}
+
+    <!-- Avatar - inabofya kufungua file input iliyofichwa -->
+    <div class="avatar-wrap">
+      <label for="{{ pform.profile_picture.id_for_label }}" class="avatar-circle" id="avatarCircle">
+        {% if pform.instance.profile_picture %}
+          <img src="{{ pform.instance.profile_picture.url }}" alt="Profile" id="avatarPreview">
+        {% else %}
+          <span class="placeholder-icon" id="avatarPlaceholder">👤</span>
+          <img src="" alt="Profile" id="avatarPreview" style="display:none;">
+        {% endif %}
+        <div class="avatar-overlay">Bofya kubadilisha picha</div>
+      </label>
     </div>
+
+    {{ pform.profile_picture }}
+
+    <!-- Fields nyingine za pform (bio) -->
+    <p>
+      {{ pform.bio.label_tag }}
+      {{ pform.bio }}
+    </p>
+
+    <!-- Fields za sform (class, email) -->
+    {{ sform.as_p }}
+
+    <button type="submit">Save Changes</button>
+  </form>
+
+  <a href="{% url 'dashboard' %}" class="back-link">&larr; Rudi Dashboard</a>
+</div>
+
+<div class="toast" id="toast">Inasave...</div>
+
+<script>
+  // Live preview ya picha unapochagua faili
+  const fileInput = document.getElementById('{{ pform.profile_picture.id_for_label }}');
+  const preview = document.getElementById('avatarPreview');
+  const placeholder = document.getElementById('avatarPlaceholder');
+
+  if (fileInput) {
+    fileInput.addEventListener('change', function () {
+      const file = this.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+          if (placeholder) placeholder.style.display = 'none';
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+
+  // Toast ndogo inapotuma form
+  document.getElementById('editForm').addEventListener('submit', function () {
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+  });
+</script>
 
 </body>
 </html>

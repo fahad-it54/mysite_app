@@ -1,168 +1,204 @@
-
-
-
-
-
-
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sw">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matokeo</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', Arial, sans-serif; }
+  body { background:#f4f6fa; color:#1a1a1a; }
+  .app { display:flex; min-height:100vh; }
 
-    <!-- Tailwind CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
+  /* SIDEBAR - inafanana na dashboard */
+  .sidebar { width:230px; background:#26348f; color:#dfe3f5; display:flex; flex-direction:column; flex-shrink:0; transition:width .25s; }
+  .sidebar.collapsed { width:64px; }
+  .sidebar-logo { display:flex; align-items:center; justify-content:center; padding:16px 0; background:#fff; }
+  .sidebar-logo img { width:44px; height:44px; object-fit:contain; }
+  .menu-label { font-size:11px; letter-spacing:1px; color:#9aa3d6; padding:16px 20px 6px; }
+  .sidebar.collapsed .menu-label { display:none; }
+  .nav-item { display:flex; align-items:center; gap:12px; padding:11px 20px; color:#dfe3f5; text-decoration:none; font-size:14px; white-space:nowrap; }
+  .nav-item:hover { background:rgba(255,255,255,.08); }
+  .nav-item.active { background:rgba(255,255,255,.14); color:#fff; font-weight:600; }
+  .sidebar.collapsed .nav-item { justify-content:center; padding:12px 0; }
+  .sidebar.collapsed .nav-item span { display:none; }
+  .sidebar-help { margin-top:auto; border-top:1px solid rgba(255,255,255,.15); padding-top:10px; }
 
-    <title>Student Profile</title>
+  /* MAIN */
+  .main { flex:1; display:flex; flex-direction:column; min-width:0; }
+  .topbar { display:flex; align-items:center; justify-content:space-between; background:#eef2fb; padding:12px 20px; }
+  .toggle-btn { background:#fff; border:1px solid #dde1ef; border-radius:8px; padding:8px 10px; cursor:pointer; }
+
+  .content { padding:14px 20px 40px; display:flex; flex-direction:column; gap:16px; }
+
+  .page-title { font-size:20px; font-weight:700; margin-bottom:2px; }
+  .page-sub { font-size:13px; color:#777; margin-bottom:10px; }
+
+  /* Summary cards */
+  .summary-row { display:grid; grid-template-columns:1fr; gap:12px; }
+  @media(min-width:600px){ .summary-row { grid-template-columns:repeat(4,1fr); } }
+  .sum-card { background:#fff; border-radius:12px; padding:16px; box-shadow:0 1px 3px rgba(0,0,0,.04); }
+  .sum-card .label { font-size:11px; color:#888; letter-spacing:.5px; margin-bottom:6px; }
+  .sum-card .val { font-size:22px; font-weight:700; }
+  .sum-card.green .val { color:#1a9a55; }
+  .sum-card.red .val { color:#c0392b; }
+  .sum-card.blue .val { color:#2563eb; }
+
+  /* Table card */
+  .table-card { background:#fff; border-radius:14px; padding:18px; box-shadow:0 1px 3px rgba(0,0,0,.04); overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; min-width:480px; }
+  thead th {
+    text-align:left; font-size:11px; letter-spacing:.5px; color:#888;
+    padding:10px 12px; border-bottom:1px solid #eee; white-space:nowrap;
+  }
+  tbody td { padding:12px; font-size:14px; border-bottom:1px solid #f2f2f2; }
+  tbody tr:last-child td { border-bottom:none; }
+  tbody tr:hover { background:#fafbff; }
+
+  .subject-name { font-weight:600; }
+
+  .grade-badge {
+    display:inline-block; padding:4px 12px; border-radius:20px;
+    font-size:12px; font-weight:700;
+  }
+  .grade-A { background:#e3f9ec; color:#1a9a55; }
+  .grade-B { background:#e8f0fe; color:#2563eb; }
+  .grade-C { background:#fdf6e3; color:#b8860b; }
+  .grade-D { background:#fdeaea; color:#c0392b; }
+  .grade-F { background:#fdeaea; color:#c0392b; }
+
+  .score-bar-track { width:80px; height:6px; background:#eceef4; border-radius:6px; overflow:hidden; display:inline-block; vertical-align:middle; margin-right:8px; }
+  .score-bar-fill { height:100%; background:#2563eb; border-radius:6px; }
+
+  .empty-state { text-align:center; padding:40px 10px; color:#999; font-size:14px; }
+  p{
+    text-align: center;
+    background-color: white;
+    font-weight: bold;
+    padding: 10px 12px;
+  }
+</style>
 </head>
+<body>
 
-<body class="bg-gray-100">
+<div class="app">
 
-    <!-- Main Container -->
-    <div class="min-h-screen flex">
+  <!-- ===== SIDEBAR ===== -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <img src="{% static 'lo.jpg' %}" alt="Logo">
+    </div>
+    <div class="menu-label">MENU</div>
+    <a href="{% url 'dashboard' %}" class="nav-item active">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+  <span>Dashboard</span>
+</a>
 
-        <!-- Sidebar -->
-        <div class="w-64 bg-blue-700 text-white p-6">
+<a href="{% url 'results' %}" class="nav-item">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+  <span>Results</span>
+</a>
 
-            <h1 class="text-2xl font-bold mb-10">
-                Student Portal
-            </h1>
+<a href="{% url 'edit_profile' %}" class="nav-item">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+  <span>Edit Profile</span>
+</a>
 
-            <ul class="space-y-4">
+<a href="{% url 'Courses' %}" class="nav-item">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5V4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="11" x2="16" y2="11"/></svg>
+  <span>Courses</span>
+</a>
 
-                <li>
-                    <a href="#" class="block hover:bg-blue-600 p-3 rounded-lg">
-                        Dashboard
-                    </a>
-                </li>
+<a href="{% url 'grader' %}" class="nav-item">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V6a2 2 0 0 1 2-2h9l5 5v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
+  <span>Examination</span>
+</a>
+    <div class="sidebar-help">
+      <a href="{% url 'login' %}" class="nav-item"><span>Logout</span></a>
+    </div>
+  </div>
 
-                <li>
-                    <a href="#" class="block hover:bg-blue-600 p-3 rounded-lg">
-                        My Results
-                    </a>
-                </li>
+  <!-- ===== MAIN ===== -->
+  <div class="main">
+    <div class="topbar">
+      <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+    </div>
 
-                <li>
-                    <a href="#" class="block hover:bg-blue-600 p-3 rounded-lg">
-                        Subjects
-                    </a>
-                </li>
+    <div class="content">
 
-                <li>
-                    <a href="#" class="block hover:bg-blue-600 p-3 rounded-lg">
-                        Logout
-                    </a>
-                </li>
+      <div>
+        <div class="page-title">Results</div>
+        <div class="page-sub">Summary of all subject.</div>
+      </div>
 
-            </ul>
-
+      {% if results %}
+        <!-- Summary cards -->
+        <div class="summary-row">
+          <div class="sum-card blue">
+            <div class="label">ALL SUBJECT</div>
+            <div class="val">{{ results|length }}</div>
+          </div>
+          <div class="sum-card green">
+            <div class="label">PASS WELL</div>
+            <div class="val">{{ passed_count|default:"--" }}</div>
+          </div>
+          <div class="sum-card red">
+            <div class="label">FAIL</div>
+            <div class="val">{{ failed_count|default:"--" }}</div>
+          </div>
+          <div class="sum-card">
+            <div class="label">AVERAGE (AVG)</div>
+            <div class="val">{{ average_score|default:"--" }}</div>
+          </div>
         </div>
 
-        <!-- Content -->
-        <div class="flex-1 p-8">
-            {% if user_profile %}
-
-
-            <!-- Top Profile Card -->
-            <div class="bg-white shadow-lg rounded-2xl p-6 flex items-center gap-6">
-
-                <!-- Profile Image -->
-                <img
-                    src="{% url 'edit_profile' %}"
-                    class="w-24 h-24 rounded-full border-4 border-blue-500"
-                >
-
-                <!-- Student Details -->
-                <div>
-
-                    <h2 class="text-2xl font-bold text-gray-800">
-                        {{ student.username }}
-                    </h2>
-
-                    <p class="text-gray-600 mt-1">
-                        Admission Number:
-                        <span class="font-semibold">
-                            {{ user_profile.admission_number}}
-                        </span>
-                    </p>
-
-                    <p class="text-gray-600">
-                        Class:
-                        <span class="font-semibold">
-                            {{ user_profile.student_class }}
-                        </span>
-                    </p>
-
-                    <p class="text-gray-600">
-                        Email:
-                        <span class="font-semibold">
-                            {{user_profile.email}}
-                        </span>
-                    </p>
-                    {% else %}
-
-                     <div class="bg-red-100 text-red-700 p-4 rounded-lg">
-
-                        No profile available
-                    </div>
-
-                     {% endif %}
-
-
-                </div>
-
-            </div>
-
-            <!-- Subjects Section -->
-            <div class="mt-8 bg-white shadow-lg rounded-2xl p-6">
-
-                <h3 class="text-xl font-bold text-gray-800 mb-4">
-                    Subjects
-                </h3>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-
-                    {% for subject in subjects %}
-
-                    <div class="bg-blue-50 p-4 rounded-xl border border-blue-100">
-
-                        <h4 class="text-lg font-semibold text-blue-700">
-                            {{ subject.subject.name }}
-                        </h4>
-
-                        <p class="text-gray-600 mt-2">
-                            Score:
-                            <span class="font-bold">
-                                {{ subject.score }}
-                            </span>
-                        </p>
-
-                        <p class="text-gray-600">
-                            Grade:
-                            <span class="font-bold text-green-600">
-                                {{ subject.grade }}
-                            </span>
-                        </p>
-
-                    </div>
-
-                    
-                  {% empty %}
-
-                   <div class="bg-yellow-100 text-yellow-700 p-4 rounded-lg">
-
-                     No results uploaded
-                       
-                   </div>
-                   {% endfor %}
-
-                </div>
-
-            </div>
-
+        <!-- Table -->
+        <div class="table-card">
+          <table>
+            <thead>
+              <tr>
+                <th>Subject</th>
+                <th>Marks</th>
+                <th>Grade</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for r in results %}
+              <tr>
+                <td class="subject-name">{{ r.subject.name }}</td>
+                <td>
+                  <span class="score-bar-track">
+                    <span class="score-bar-fill" style="width:{{ r.score }}%;"></span>
+                  </span>
+                  {{ r.score }}/100
+                </td>
+                <td>
+                  <span class="grade-badge grade-{{ r.grade|slice:':1' }}">{{ r.grade }}</span>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
+
+      {% else %}
+        <div class="table-card">
+          <div class="empty-state">Bado hakuna matokeo yaliyochapishwa.</div>
+        </div>
+      {% endif %}
 
     </div>
+  </div>
+</div>
+
+<script>
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('collapsed');
+  }
+</script>
+<footer>
+  <p> © Copyright2026</p>
+</footer>
 
 </body>
 </html>

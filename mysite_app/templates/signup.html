@@ -1,73 +1,274 @@
+{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="sw">
 <head>
-    <title>Signup</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Account</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Arial, sans-serif;
+  }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #2e8b74;
+    padding: 20px;
+  }
+
+  .card {
+    width: 380px;
+    border-radius: 22px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,.25);
+  }
+
+  .top {
+    background: #a9d6c8;
+    padding: 36px 32px 50px;
+  }
+
+  .cap-icon {
+    width: 56px;
+    height: 56px;
+    background: #fff;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 18px;
+  }
+
+  .top h1 {
+    color: #173b33;
+    font-size: 30px;
+    margin-bottom: 6px;
+  }
+
+  .subtitle {
+    color: #1f4a3f;
+    font-size: 14px;
+  }
+
+  .bottom {
+    background: #fff;
+    padding: 30px 32px;
+    margin-top: -26px;
+    border-radius: 24px 24px 0 0;
+  }
+
+  .bottom h2 {
+    font-size: 24px;
+    color: #16281f;
+    margin-bottom: 20px;
+  }
+
+  .error-box {
+    background: #fdeaea;
+    color: #c0392b;
+    font-size: 13px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+  }
+
+  /* Tunatengeneza upya muonekano wa Django form fields (as_p) */
+  form p { margin: 0 0 16px; position:relative; }
+
+  form p label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: #3a4270;
+    letter-spacing: .4px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+
+  form input {
+    width: 100%;
+    background: #f4f6f6;
+    border: 1.5px solid transparent;
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 15px;
+    color: #16281f;
+    outline: none;
+    transition: border-color .2s ease, background .2s ease;
+  }
+
+  form input:focus {
+    border-color: #14524a;
+    background: #fff;
+  }
+
+  form .helptext {
+    display: block;
+    font-size: 11.5px;
+    color: #8a9793;
+    margin-top: 5px;
+    line-height: 1.4;
+  }
+
+  form ul.errorlist {
+    list-style: none;
+    margin-top: 6px;
+  }
+  form ul.errorlist li {
+    color: #c0392b;
+    font-size: 12.5px;
+    background: #fdeaea;
+    padding: 6px 10px;
+    border-radius: 6px;
+    margin-top: 4px;
+  }
+
+  .signup-btn {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    background: #14524a;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .3s;
+    margin-top: 6px;
+  }
+
+  .signup-btn:hover {
+    background: #0d3d37;
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #9aa5a2;
+    font-size: 13px;
+    margin: 22px 0 16px;
+  }
+  .divider::before, .divider::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid #e2e6e5;
+  }
+  .divider span { padding: 0 12px; }
+
+  .login-link {
+    text-align: center;
+    font-size: 14px;
+    color: #6b7a76;
+  }
+  .login-link a {
+    color: #14524a;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  /* Strength bar kwa password */
+  .strength-track {
+    height: 5px;
+    background: #eceef4;
+    border-radius:6px;
+    overflow:hidden;
+    margin-top:8px;
+  }
+  .strength-fill {
+    height:100%;
+    width:0%;
+    background:#c0392b;
+    transition:width .25s ease, background .25s ease;
+  }
+</style>
 </head>
 <body>
-    <style>
-        body{
-            width: 50%;
-            height: 60%;
-            justify-content: center;
-            display: flex;
-        }
-    .form-container {
-    max-width: 500px;
-    margin: 50px auto;
-    padding: 20px;
-    background: #f9f9f9;
-    border-radius: 10px;
-    font-family: Arial, sans-serif;
-}
 
-/* Ku-style vile vi-box vya kuandikia */
-input[type="text"], input[type="password"], input[type="email"] {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    display: block;
-}
+  <div class="card">
 
-/* Ku-style kile kitufe cha Sign Up */
-button {
-    background-color: #007bff;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 100%;
-}
+    <div class="top">
+      <div class="cap-icon">
+        <svg viewBox="0 0 24 24" width="34" height="34" fill="#173b33">
+          <path d="M12 3 1 8l11 5 9-4.09V17h2V8L12 3zm0 8.5L4.5 8 12 4.5 19.5 8 12 11.5zM6 12.18v3.32c0 1.5 2.69 3.5 6 3.5s6-2 6-3.5v-3.32l-6 2.73-6-2.73z"/>
+        </svg>
+      </div>
+      <h1>Join with us</h1>
+      <p class="subtitle">Create Account</p>
+    </div>
 
-/* Kuficha au ku-style maelezo ya password (help text) */
-.helptext {
-    font-size: 12px;
-    color: #666;
-    display: block;
-    margin-bottom: 10px;
-}
+    <div class="bottom">
+      <h2>Create Account</h2>
 
-    </style>
-<div class="from-container">
-<h1>CREATE ACCOUNT</h1>
+      {% if form.errors %}
+        <div class="error-box">There are problem please look carefully.</div>
+      {% endif %}
 
-<form method="POST">
+      <form method="POST" id="signupForm">
+        {% csrf_token %}
+        {{ form.as_p }}
 
-    {% csrf_token %}
+        <button type="submit" class="signup-btn">Sign Up</button>
+      </form>
 
-    {{ form.as_p }}
+      <div class="divider"><span>Allready have a Account?</span></div>
 
-    <button type="submit">
-        SIGN UP
-    </button>
+      <div class="login-link">
+        <a href="{% url 'login' %}">Sign in</a>
+      </div>
+    </div>
 
-</form>
-</div>
+  </div>
 
-<a href="/">Already have account? Login</a>
+<script>
+  // Strength bar ndogo chini ya password ya kwanza (id_password1)
+  const pwd1 = document.getElementById('id_password1');
+  if (pwd1) {
+    const track = document.createElement('div');
+    track.className = 'strength-track';
+    const fill = document.createElement('div');
+    fill.className = 'strength-fill';
+    track.appendChild(fill);
+    pwd1.closest('p').appendChild(track);
+
+    pwd1.addEventListener('input', function () {
+      const val = this.value;
+      let score = 0;
+      if (val.length >= 8) score += 34;
+      if (/[A-Z]/.test(val)) score += 22;
+      if (/[0-9]/.test(val)) score += 22;
+      if (/[^A-Za-z0-9]/.test(val)) score += 22;
+      fill.style.width = Math.min(score, 100) + '%';
+      fill.style.background = score < 40 ? '#c0392b' : score < 75 ? '#e6b400' : '#1a9a55';
+    });
+  }
+
+  // Onyesha kama password2 inalingana na password1 kwa live
+  const pwd2 = document.getElementById('id_password2');
+  if (pwd1 && pwd2) {
+    const note = document.createElement('span');
+    note.className = 'helptext';
+    note.style.color = '#c0392b';
+    pwd2.closest('p').appendChild(note);
+
+    pwd2.addEventListener('input', function () {
+      if (this.value === '') { note.textContent = ''; return; }
+      if (this.value === pwd1.value) {
+        note.textContent = '✓ Password zinafanana';
+        note.style.color = '#1a9a55';
+      } else {
+        note.textContent = 'Password hazifanani bado';
+        note.style.color = '#c0392b';
+      }
+    });
+  }
+</script>
 
 </body>
 </html>

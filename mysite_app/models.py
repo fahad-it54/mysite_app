@@ -45,7 +45,7 @@ def create_user_profile(sender, instance, created, **kwargs):
        
 
         if not user_profile.admission_number:
-         admission_number = f"FAHA/{current_year}/{instance.id:03d}"
+         admission_number = f"BIT{current_year}{instance.id:03d}"
 
         user_profile.admission_number = admission_number
         user_profile.save()
@@ -60,6 +60,10 @@ class StudentProfile(models.Model):
     admission_number = models.CharField(max_length=50, blank=True, null=True)
     student_class = models.CharField(max_length=50, blank=True, null=True)
     email = models.EmailField()
+
+    is_paid = models.BooleanField(default=False)
+    is_verified = models.BooleanField(default=False)
+
 
 
     def __str__(self):
