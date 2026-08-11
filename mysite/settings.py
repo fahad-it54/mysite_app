@@ -82,7 +82,7 @@ import os
 import dj_database_url
 DATABASES = {
 'default': dj_database_url.config(
-    default=:'sqlite3:///' + os.path.join(BASE_DIR, 'db.sqlite3'),
+    default='sqlite3:///' + os.path.join(BASE_DIR, 'db.sqlite3'),
     conn_max_age=600
 
     )
