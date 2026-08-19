@@ -35,7 +35,7 @@ class Subject(models.Model):
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
        current_year = datetime.now().year
-       user_profile, created =  StudentProfile.objects.get_or_create(user=user)
+       user_profile, created =  StudentProfile.objects.get_or_create(user=instance)
        
 
        if not user_profile.admission_number:
