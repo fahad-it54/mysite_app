@@ -15,6 +15,14 @@ from django.views.decorators.http import require_POST
 from datetime import timedelta
 from .models import AttendanceRecord, FieldTrainingLog, StudentPlacement, SupervisorVisit
 from .forms import FieldTrainingLogForm
+from django.http import HttpResponse
+from reportlab.lib.pagesizes import A5
+from reportlab.lib.units import mm
+from reportlab.lib import colors
+from reportlab.pdfgen import canvas
+from reportlab.lib.utils import ImageReader
+import os
+
 
 
 
@@ -237,6 +245,94 @@ def field_log_create(request):
     else:
         form = FieldTrainingLogForm()
     return render(request, 'field_log_create.html', {'form': form})
+
+@login_required
+def exam_ticket_download(request):
+    student, _ = StudentProfile.objects.get_or_create(user=request.user)
+    profile, _ = Profile.objects.get_or_create(user=request.user)
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="exam_ticket_{request.user.username}.pdf"'
+
+    p = canvas.Canvas(response, pagesize=A5)
+    width, height = A5
+
+    # Header
+    p.setFillColor(colors.HexColor("#14524a"))
+    p.rect(0, height - 30*mm, width, 30*mm, fill=1, stroke=0)
+    p.setFillColor(colors.white)
+    p.setFont("Helvetica-Bold", 16)
+    p.drawCentredString(width/2, height - 15*mm, "EXAM TICKET")
+    p.setFont("Helvetica", 9)
+    p.drawCentredString(width/2, height - 22*mm, "The Fahad Intenational School")
+
+    # Picha ya mwanafunzi
+    photo_x = 15*mm
+    photo_y = height - 30*mm - 35*mm
+    photo_size = 30*mm
+
+    p.setStrokeColor(colors.HexColor("#ddd"))
+    p.rect(photo_x, photo_y, photo_size, photo_size, stroke=1, fill=0)
+
+    try:
+        if profile.profile_picture and hasattr(profile.profile_picture, 'path') and os.path.exists(profile.profile_picture.path):
+            img = ImageReader(profile.profile_picture.path)
+            p.drawImage(img, photo_x, photo_y, width=photo_size, height=photo_size,
+                        preserveAspectRatio=True, anchor='c')
+    except Exception:
+        p.setFont("Helvetica", 8)
+        p.drawCentredString(photo_x + photo_size/2, photo_y + photo_size/2, "No Photo")
+
+    # Taarifa za mwanafunzi
+    info_x = photo_x + photo_size + 10*mm
+    info_y = height - 40*mm
+
+    def draw_field(label, value, y):
+        p.setFont("Helvetica", 8)
+        p.setFillColor(colors.grey)
+        p.drawString(info_x, y, label)
+        p.setFont("Helvetica-Bold", 11)
+        p.setFillColor(colors.black)
+        p.drawString(info_x, y - 5*mm, str(value))
+
+    draw_field("FULL NAME", request.user.get_full_name() or request.user.username, info_y)
+    draw_field("ADMISSION NUMBER", student.admission_number or "-", info_y - 12*mm)
+    draw_field("EMAIL", student.email or "-", info_y - 24*mm)
+    draw_field("CLASS", student.student_class or "-", info_y - 36*mm)
+
+    # Mstari
+    line_y = photo_y - 8*mm
+    p.setStrokeColor(colors.HexColor("#ddd"))
+    p.line(15*mm, line_y, width - 15*mm, line_y)
+
+    # Masomo
+    p.setFont("Helvetica-Bold", 10)
+    p.setFillColor(colors.HexColor("#14524a"))
+    p.drawString(15*mm, line_y - 8*mm, "EXAMINABLE COURSES")
+
+    results = Result.objects.filter(student=request.user).select_related('subject')
+    y_cursor = line_y - 16*mm
+    p.setFont("Helvetica", 9)
+    p.setFillColor(colors.black)
+
+    if results.exists():
+        for r in results:
+            if y_cursor < 15*mm:
+                break
+            p.drawString(18*mm, y_cursor, f"- {r.subject.name}")
+            y_cursor -= 6*mm
+    else:
+        p.setFont("Helvetica-Oblique", 9)
+        p.drawString(18*mm, y_cursor, "Yet initialize the courses.")
+
+    # Footer
+    p.setFont("Helvetica-Oblique", 7)
+    p.setFillColor(colors.grey)
+    p.drawCentredString(width/2, 8*mm, "This tcket is legaly when attachment with student ID.")
+
+    p.showPage()
+    p.save()
+    return response
 
 
 

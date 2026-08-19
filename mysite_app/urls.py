@@ -19,6 +19,7 @@ urlpatterns = [
     path('field-training/attendance-action/', views.attendance_action, name='attendance_action'),
     path('field-training/logs/', views.field_log_list, name='field_log_list'),
     path('field-training/logs/add/', views.field_log_create, name='field_log_create'),
+    path('exam-ticket/download/', views.exam_ticket_download, name='exam_ticket_download'),
     
 
 

@@ -239,9 +239,9 @@
             <div class="visit-sup">{{ v.supervisor.name|default:"--" }}</div>
           </div>
           <span class="visit-badge {{ v.status }}">
-            {% if v.status == 'completed' %}Imekamilika
-            {% elif v.status == 'missed' %}Imekosekana
-            {% else %}Imepangwa{% endif %}
+            {% if v.status == 'completed' %}completed
+            {% elif v.status == 'missed' %}missed
+            {% else %}Planned{% endif %}
           </span>
         </div>
       {% empty %}
