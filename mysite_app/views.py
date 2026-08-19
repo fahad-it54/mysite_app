@@ -2,9 +2,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
-from .forms import ProfileForm, StudentEditForm
+from .forms import ProfileForm, StudentEditForm, FieldLogForm
 from .models import Profile
-from .models import StudentProfile, Subject, Result
+from .models import StudentProfile, Subject, Result, FieldTrainingLog
 from .models import Profile, StudentProfile
 
 
@@ -148,3 +148,22 @@ def results(request):
     student_profile, created = StudentProfile.objects.get_or_create(user=request.user)
     student_results = Result.objects.filter(student=request.user).select_related('subject')
     return render(request, 'user_profile.html', {'results': student_results})
+
+
+@login_required
+def field_log_create(request):
+    if request.method == 'POST':
+        form = FieldLogForm(request.POST)
+        if form.is_valid():
+            log = form.save(commit=False)
+            log.student = request.user
+            log.save()
+            return redirect('field_log_list')
+    else:
+        form = FieldLogForm()
+    return render(request, 'field_log_create.html', {'form': form})
+
+@login_required
+def field_log_list(request):
+    logs = FieldTrainingLog.objects.filter(student=request.user).order_by('-date', '-time_logged')
+    return render(request, 'field_log_list.html', {'logs': logs})

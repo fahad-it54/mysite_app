@@ -15,6 +15,8 @@ urlpatterns = [
     path('Courses/', views.Courses_view, name='Courses'),
     path('payment/', views.payment, name='payment'),
     path('results/', views.results, name='results'),
+    path('field-log/new/', views.field_log_create, name='field_log_create'),
+    path('field-log/', views.field_log_list, name='field_log_list'),
 
 
 ]

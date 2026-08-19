@@ -87,3 +87,26 @@ class Result(models.Model):
     def __str__(self):
         return f"{self.student.username} - {self.subject.name}"
 # Create your models here.
+    
+
+class FieldTrainingLog(models.Model):
+
+    student = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE
+    )
+
+    date = models.DateField(auto_now_add=True)
+    time_logged = models.TimeField(auto_now_add=True)
+
+    activity = models.TextField()
+
+    latitude = models.DecimalField(max_digits=10, decimal_places=7, blank=True, null=True)
+    longitude = models.DecimalField(max_digits=10, decimal_places=7, blank=True, null=True)
+    location_name = models.CharField(max_length=255, blank=True, null=True)
+
+    supervisor_comment = models.TextField(blank=True, null=True)
+    approved = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.student.username} - {self.date}"

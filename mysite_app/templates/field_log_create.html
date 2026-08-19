@@ -1,0 +1,142 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Field Training Logbook</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', Arial, sans-serif; }
+  body { background:#f4f6fa; padding:24px 16px; }
+  .card { max-width:420px; margin:0 auto; background:#fff; border-radius:16px; padding:22px; box-shadow:0 1px 3px rgba(0,0,0,.05); }
+  .card h2 { font-size:19px; margin-bottom:4px; }
+  .card .sub { font-size:13px; color:#888; margin-bottom:18px; }
+
+  .loc-box {
+    background:#f7f8fb;
+    border-radius:10px;
+    padding:14px;
+    margin-bottom:18px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .loc-box .dot {
+    width:10px; height:10px; border-radius:50%;
+    background:#e67e22; flex-shrink:0;
+  }
+  .loc-box.ok .dot { background:#1a9a55; }
+  .loc-box.error .dot { background:#c0392b; }
+  .loc-box .txt { font-size:13px; color:#444; }
+  .loc-box .txt small { display:block; color:#999; font-size:11px; margin-top:2px; }
+
+  textarea {
+    width:100%;
+    min-height:110px;
+    padding:12px 14px;
+    border:1.5px solid #e1e5f5;
+    border-radius:10px;
+    font-size:14px;
+    resize:vertical;
+    outline:none;
+  }
+  textarea:focus { border-color:#3a5bd9; }
+
+  button[type="submit"] {
+    width:100%;
+    margin-top:16px;
+    padding:13px;
+    border:none;
+    border-radius:10px;
+    background:#14524a;
+    color:#fff;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+  }
+  button[type="submit"]:disabled {
+    background:#aab5b2;
+    cursor:not-allowed;
+  }
+
+  .back-link {
+    display:block;
+    text-align:center;
+    margin-top:14px;
+    font-size:13px;
+    color:#6b7a76;
+    text-decoration:none;
+  }
+</style>
+</head>
+<body>
+
+  <div class="card">
+    <h2>Field Training Logbook</h2>
+    <p class="sub">Daily logbook — location will catch</p>
+
+    <div class="loc-box" id="locBox">
+      <div class="dot"></div>
+      <div class="txt" id="locText">Search for your location...</div>
+    </div>
+
+    <form method="POST" id="logForm">
+      {% csrf_token %}
+      {{ form.latitude }}
+      {{ form.longitude }}
+      {{ form.location_name }}
+
+      <label style="display:block; font-size:12px; font-weight:700; color:#3a4270; margin-bottom:6px; text-transform:uppercase;">DAILY LOGBOOK ACTIVITY</label>
+      {{ form.activity }}
+
+      <button type="submit" id="submitBtn" disabled>Save Logbook</button>
+    </form>
+
+    <a href="{% url 'field_log_list' %}" class="back-link">&larr; Show your logbook </a>
+  </div>
+
+<script>
+  const locBox = document.getElementById('locBox');
+  const locText = document.getElementById('locText');
+  const submitBtn = document.getElementById('submitBtn');
+  const latInput = document.getElementById('id_latitude');
+  const lngInput = document.getElementById('id_longitude');
+  const nameInput = document.getElementById('id_location_name');
+
+  if (!navigator.geolocation) {
+    locBox.classList.add('error');
+    locText.textContent = 'you divice not had location . inform your admin.';
+  } else {
+    navigator.geolocation.getCurrentPosition(function (pos) {
+      const lat = pos.coords.latitude;
+      const lng = pos.coords.longitude;
+
+      latInput.value = lat;
+      lngInput.value = lng;
+
+      locBox.classList.add('ok');
+      locText.innerHTML = 'Location catch' +
+        '<small>' + lat.toFixed(5) + ', ' + lng.toFixed(5) + '</small>';
+
+      fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat=' + lat + '&lon=' + lng)
+        .then(r => r.json())
+        .then(data => {
+          const place = data.display_name || '';
+          nameInput.value = place;
+          if (place) {
+            locText.innerHTML = 'Location catch' +
+              '<small>' + place + '</small>';
+          }
+        })
+        .catch(() => {});
+
+      submitBtn.disabled = false;
+    }, function (err) {
+      locBox.classList.add('error');
+      locText.textContent = 'Your location do not found please try again.';
+    }, { enableHighAccuracy: true, timeout: 15000 });
+  }
+</script>
+
+</body>
+</html>

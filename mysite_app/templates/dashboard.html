@@ -152,6 +152,10 @@
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V6a2 2 0 0 1 2-2h9l5 5v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
   <span>Examination</span>
 </a>
+<a href="{% url 'field_log_create' %}" class="nav-item">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s7-6.5 7-12a7 7 0 0 0-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>
+  <span>Field Training</span>
+</a>
     <div class="sidebar-help">
       <a href="{% url 'login' %}" class="nav-item"><i class='bx bxs-log-out'></i><span>Logout</span></a>
     </div>
@@ -217,19 +221,19 @@
           </div>
           <!-- Quick Actions -->
 <div class="card">
-  <div class="section-label">VITENDO VYA HARAKA</div>
+  <div class="section-label">QUICK ACTION</div>
   <div class="quick-grid">
     <a href="{% url 'results' %}" class="quick-item">
       <div class="quick-icon blue">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
       </div>
-      <span>Matokeo</span>
+      <span>Result</span>
     </a>
     <a href="{% url 'Courses' %}" class="quick-item">
       <div class="quick-icon green">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5V4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="11" x2="16" y2="11"/></svg>
       </div>
-      <span>Masomo</span>
+      <span>Couses</span>
     </a>
     <a href="{% url 'edit_profile' %}" class="quick-item">
       <div class="quick-icon purple">
@@ -241,7 +245,7 @@
       <div class="quick-icon orange">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
       </div>
-      <span>Malipo</span>
+      <span>Payement</span>
     </a>
   </div>
 </div>
@@ -250,10 +254,10 @@
         {% else %}
           <div class="locked-box">
             {% if not student.is_paid %}
-              <p>Taarifa zako hazitaonekana mpaka ukamilishe malipo.</p>
-              <a href="{% url 'payment' %}" class="btn-pay">Lipia sasa</a>
+              <p>your detail dosenot show untl ur paid.</p>
+              <a href="{% url 'payment' %}" class="btn-pay">paid now</a>
             {% else %}
-              <p>Malipo yamepokelewa. Subiri admin athibitishe taarifa zako.</p>
+              <p>Payement sucessfullly wait for approve.</p>
             {% endif %}
           </div>
         {% endif %}

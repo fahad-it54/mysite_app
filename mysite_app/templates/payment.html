@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Malipo</title>
+<title>payment</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', Arial, sans-serif; }
   body { background:#f4f6fa; display:flex; align-items:center; justify-content:center; min-height:100vh; padding:20px; }
@@ -25,21 +25,21 @@
   <h2>Malipo ya usajili</h2>
 
   {% if student.is_paid %}
-    <div class="status paid">Umeshalipia</div>
-    <p>Malipo yako yamepokelewa. Subiri admin athibitishe taarifa zako.</p>
+    <div class="status paid">Paid</div>
+    <p>Your payment secessfullly. Please wait for admin for aprove your bill.</p>
   {% else %}
-    <div class="status unpaid">Bado hujalipia</div>
-    <p>Tafadhali kamilisha malipo ya usajili ili taarifa zako za kitaaluma zionekane kwenye dashboard.</p>
+    <div class="status unpaid">Yet paid</div>
+    <p>Please paid ur bill right now so as to see ur academic deteil.</p>
 
     <div class="info-box">
-      <b>Namna ya kulipa</b>
-      Tuma malipo kupitia M-Pesa/Tigo Pesa namba: <b>XXX-XXX-XXX</b><br>
-      Jina la mpokeaji: <b>Jina la Shule/Kampuni</b><br>
-      Baada ya kulipa, peleka risiti ofisini au kwa admin ili athibitishe.
+      <b>how to paid</b>
+      send payment thorough NMB/PBZ Bank: <b>XXX-XXX-XXX</b><br>
+      Name of sender: <b>fahad international school</b><br>
+      After payment, please send ur Recept for ADIMN for approve.
     </div>
   {% endif %}
 
-  <a href="{% url 'dashboard' %}" class="btn-back">&larr; Rudi Dashboard</a>
+  <a href="{% url 'dashboard' %}" class="btn-back">&larr; Back to Dashboard</a>
 </div>
 
 </body>
