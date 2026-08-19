@@ -38,8 +38,7 @@ def create_user_profile(sender, instance, created, **kwargs):
        
         current_year = datetime.now().year
 
-        for user in User.objects.all():
-
+        
 
            user_profile, created =  StudentProfile.objects.get_or_create(user=user)
        
