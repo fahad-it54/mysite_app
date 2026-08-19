@@ -34,20 +34,15 @@ class Subject(models.Model):
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
-
-       
-        current_year = datetime.now().year
-
-        
-
-           user_profile, created =  StudentProfile.objects.get_or_create(user=user)
+       current_year = datetime.now().year
+       user_profile, created =  StudentProfile.objects.get_or_create(user=user)
        
 
-        if not user_profile.admission_number:
-         admission_number = f"BIT{current_year}{instance.id:03d}"
+       if not user_profile.admission_number:
+          admission_number = f"BIT{current_year}{instance.id:03d}"
 
-        user_profile.admission_number = admission_number
-        user_profile.save()
+          user_profile.admission_number = admission_number
+          user_profile.save()
 
 class StudentProfile(models.Model):
 
