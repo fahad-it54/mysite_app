@@ -2,10 +2,22 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
-from .forms import ProfileForm, StudentEditForm, FieldLogForm
+from .forms import ProfileForm, StudentEditForm
 from .models import Profile
-from .models import StudentProfile, Subject, Result, FieldTrainingLog
+from .models import StudentProfile, Subject, Result
 from .models import Profile, StudentProfile
+import json
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.shortcuts import render, redirect
+from django.utils import timezone
+from django.views.decorators.http import require_POST
+from datetime import timedelta
+from .models import AttendanceRecord, FieldTrainingLog, StudentPlacement, SupervisorVisit
+from .forms import FieldTrainingLogForm
+
+
+
 
 
 # LOGIN PAGE
@@ -151,19 +163,80 @@ def results(request):
 
 
 @login_required
+def field_training_hub(request):
+    today = timezone.localdate()
+    record, _ = AttendanceRecord.objects.get_or_create(student=request.user, date=today)
+    history = AttendanceRecord.objects.filter(student=request.user).order_by('-date')[:20]
+    logs = FieldTrainingLog.objects.filter(student=request.user)[:20]
+    placement = StudentPlacement.objects.filter(student=request.user).first()
+    visits = SupervisorVisit.objects.filter(student=request.user)[:20]
+
+    weekly_data = []
+    start_of_week = today - timedelta(days=today.weekday())
+    for i in range(4):
+        week_start = start_of_week - timedelta(weeks=i)
+        week_end = week_start + timedelta(days=6)
+        week_records = AttendanceRecord.objects.filter(student=request.user, date__range=[week_start, week_end])
+        total_hours = sum(r.hours_worked() or 0 for r in week_records)
+        weekly_data.append({
+            'start': week_start, 'end': week_end,
+            'hours': round(total_hours, 1),
+            'days': week_records.exclude(sign_in_time=None).count(),
+        })
+
+    return render(request, 'field_training_hub.html', {
+        'record': record, 'history': history, 'logs': logs,
+        'weekly_data': weekly_data, 'placement': placement, 'visits': visits,
+    })
+
+
+@login_required
+@require_POST
+def attendance_action(request):
+    data = json.loads(request.body)
+    action = data.get('action')
+    today = timezone.localdate()
+    record, _ = AttendanceRecord.objects.get_or_create(student=request.user, date=today)
+
+    if action == 'signin':
+        if record.sign_in_time:
+            return JsonResponse({'ok': False, 'error': 'Tayari umeshasaini leo.'})
+        record.sign_in_time = timezone.localtime().time()
+        record.sign_in_lat = data.get('lat')
+        record.sign_in_lng = data.get('lng')
+        record.save()
+        return JsonResponse({'ok': True, 'sign_in': record.sign_in_time.strftime('%H:%M')})
+
+    elif action == 'signout':
+        if not record.sign_in_time or record.sign_out_time:
+            return JsonResponse({'ok': False, 'error': 'Huwezi sign out sasa.'})
+        record.sign_out_time = timezone.localtime().time()
+        record.sign_out_lat = data.get('lat')
+        record.sign_out_lng = data.get('lng')
+        record.save()
+        return JsonResponse({'ok': True, 'sign_out': record.sign_out_time.strftime('%H:%M')})
+
+    return JsonResponse({'ok': False, 'error': 'Action isiyojulikana.'})
+
+
+@login_required
+def field_log_list(request):
+    logs = FieldTrainingLog.objects.filter(student=request.user)
+    return render(request, 'field_log_list.html', {'logs': logs})
+
+
+@login_required
 def field_log_create(request):
     if request.method == 'POST':
-        form = FieldLogForm(request.POST)
+        form = FieldTrainingLogForm(request.POST)
         if form.is_valid():
             log = form.save(commit=False)
             log.student = request.user
             log.save()
             return redirect('field_log_list')
     else:
-        form = FieldLogForm()
+        form = FieldTrainingLogForm()
     return render(request, 'field_log_create.html', {'form': form})
 
-@login_required
-def field_log_list(request):
-    logs = FieldTrainingLog.objects.filter(student=request.user).order_by('-date', '-time_logged')
-    return render(request, 'field_log_list.html', {'logs': logs})
+
+

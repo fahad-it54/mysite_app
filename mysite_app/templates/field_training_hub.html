@@ -1,0 +1,337 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Field Training</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', Arial, sans-serif; }
+  body { background:#f4f6fa; padding:16px; }
+  .wrap { max-width:560px; margin:0 auto; }
+
+  .org-card { background:#fff; border-radius:14px; padding:16px 18px; margin-bottom:14px; box-shadow:0 1px 3px rgba(0,0,0,.05); }
+  .org-top { display:flex; align-items:center; gap:10px; }
+  .org-icon { width:38px; height:38px; border-radius:10px; background:#eef2fb; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+  .org-top .label { font-size:11px; color:#888; letter-spacing:.5px; }
+  .org-top .name { font-size:14px; font-weight:700; color:#1a2560; margin-top:2px; }
+  .org-sub { font-size:12px; color:#999; margin-top:2px; }
+  .org-meta { display:flex; flex-wrap:wrap; gap:14px; margin-top:12px; padding-top:12px; border-top:1px solid #f2f2f5; }
+  .org-meta .item { display:flex; align-items:center; gap:6px; font-size:12.5px; color:#666; }
+
+  /* Tabs */
+  .tab-bar {
+    display:flex;
+    gap:4px;
+    background:#fff;
+    border-radius:12px;
+    padding:5px;
+    margin-bottom:14px;
+    overflow-x:auto;
+    box-shadow:0 1px 3px rgba(0,0,0,.05);
+  }
+  .tab-btn {
+    flex:1;
+    white-space:nowrap;
+    padding:9px 12px;
+    border:none;
+    background:transparent;
+    border-radius:9px;
+    font-size:12.5px;
+    font-weight:600;
+    color:#888;
+    cursor:pointer;
+  }
+  .tab-btn.active { background:#eef2fb; color:#3a5bd9; }
+
+  .tab-panel { display:none; }
+  .tab-panel.active { display:block; }
+
+  .card { background:#fff; border-radius:14px; padding:16px 18px; margin-bottom:14px; box-shadow:0 1px 3px rgba(0,0,0,.05); }
+  .card .title { font-size:11px; color:#888; letter-spacing:.5px; margin-bottom:12px; }
+
+  .status-row { display:flex; gap:16px; font-size:13px; margin-bottom:14px; flex-wrap:wrap; }
+  .status-row .in { color:#1a9a55; font-weight:600; }
+  .status-row .out { color:#2563eb; font-weight:600; }
+  .status-row .hrs { color:#3a5bd9; font-weight:600; }
+
+  .btn-row { display:flex; gap:10px; }
+  .btn-in, .btn-out {
+    flex:1; padding:12px; border-radius:10px; font-weight:600; font-size:14px; border:none; cursor:pointer;
+  }
+  .btn-in { background:#14524a; color:#fff; }
+  .btn-out { background:#fff; color:#c0392b; border:1.5px solid #f0c9c5; }
+  .btn-in:disabled, .btn-out:disabled { opacity:.4; cursor:not-allowed; }
+  .loc-note { font-size:11.5px; color:#999; margin-top:10px; }
+  .loc-note.error { color:#c0392b; }
+
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th { text-align:left; font-size:11px; color:#999; padding:6px 4px; border-bottom:1px solid #eee; }
+  td { padding:9px 4px; border-bottom:1px solid #f4f4f6; }
+  .map-link { color:#3a5bd9; text-decoration:none; font-size:12px; background:#fdece9; padding:3px 8px; border-radius:6px; }
+
+  /* Daily logbook entries */
+  .log-entry { border-bottom:1px solid #f2f2f5; padding:12px 0; }
+  .log-entry:last-child { border-bottom:none; }
+  .log-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:5px; }
+  .log-date { font-size:12.5px; font-weight:700; color:#16281f; }
+  .log-badge { font-size:10.5px; font-weight:600; padding:3px 9px; border-radius:20px; }
+  .log-badge.pending { background:#fdf6e3; color:#b8860b; }
+  .log-badge.approved { background:#e3f9ec; color:#1a9a55; }
+  .log-text { font-size:13px; color:#333; margin-bottom:4px; line-height:1.4; }
+  .log-loc { font-size:11px; color:#999; }
+
+  .add-btn { display:inline-block; background:#14524a; color:#fff; padding:9px 16px; border-radius:8px; text-decoration:none; font-size:13px; font-weight:600; margin-bottom:14px; }
+
+  /* Weekly summary */
+  .week-row { display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid #f2f2f5; }
+  .week-row:last-child { border-bottom:none; }
+  .week-range { font-size:13px; font-weight:600; color:#16281f; }
+  .week-sub { font-size:11.5px; color:#999; margin-top:2px; }
+  .week-hours { font-size:16px; font-weight:700; color:#3a5bd9; }
+
+  /* Supervisor */
+  .comment-box { background:#f7f8fb; border-radius:10px; padding:12px 14px; margin-bottom:10px; }
+  .comment-box .txt { font-size:13px; color:#333; line-height:1.4; }
+  .comment-box .meta { font-size:11px; color:#999; margin-top:6px; }
+
+  /* Visits */
+  .visit-row { display:flex; justify-content:space-between; align-items:flex-start; padding:12px 0; border-bottom:1px solid #f2f2f5; gap:10px; }
+  .visit-row:last-child { border-bottom:none; }
+  .visit-date { font-size:13px; font-weight:700; color:#16281f; }
+  .visit-notes { font-size:12.5px; color:#666; margin-top:3px; line-height:1.4; }
+  .visit-sup { font-size:11.5px; color:#999; margin-top:3px; }
+  .visit-badge { font-size:10.5px; font-weight:600; padding:3px 9px; border-radius:20px; white-space:nowrap; }
+  .visit-badge.scheduled { background:#eef2fb; color:#3a5bd9; }
+  .visit-badge.completed { background:#e3f9ec; color:#1a9a55; }
+  .visit-badge.missed { background:#fdece9; color:#c0392b; }
+
+  .empty { text-align:center; padding:30px 10px; color:#999; font-size:13.5px; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- PLACEMENT ORGANIZATION -->
+  <div class="org-card">
+    <div class="org-top">
+      <div class="org-icon">🏢</div>
+      <div>
+        <div class="label">YOUR PLACEMENT ORGANIZATION</div>
+        <div class="name">{{ placement.organization.name|default:"--" }}</div>
+      </div>
+    </div>
+    <div class="org-meta">
+      <div class="item">📍 {{ placement.organization.location|default:"--" }}</div>
+      <div class="item">✉️ {{ placement.organization.email|default:"-" }}</div>
+      <div class="item">📞 {{ placement.organization.phone|default:"-" }}</div>
+      <div class="item">📮 P.O. Box {{ placement.organization.po_box|default:"-" }}</div>
+    </div>
+  </div>
+
+  <!-- FIELD SUPERVISOR -->
+  <div class="org-card">
+    <div class="org-top">
+      <div class="org-icon">👤</div>
+      <div>
+        <div class="label">YOUR FIELD SUPERVISOR</div>
+        <div class="name">{{ placement.supervisor.name|default:"--" }}</div>
+        <div class="org-sub">Placement: {{ placement.organization.name|default:"--" }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" data-tab="attendance">Attendance</button>
+    <button class="tab-btn" data-tab="logbook">Daily Logbook</button>
+    <button class="tab-btn" data-tab="weekly">Weekly Summary</button>
+    <button class="tab-btn" data-tab="visits">Visits</button>
+    <button class="tab-btn" data-tab="supervisor">Supervisor</button>
+  </div>
+
+  <!-- TAB: ATTENDANCE -->
+  <div class="tab-panel active" id="tab-attendance">
+    <div class="card">
+      <div class="title">TODAY'S ATTENDANCE</div>
+      <div class="status-row">
+        <span class="in">Sign in: <span id="signInTxt">{{ record.sign_in_time|time:"H:i"|default:"--" }}</span></span>
+        <span class="out">Sign out: <span id="signOutTxt">{{ record.sign_out_time|time:"H:i"|default:"not yet" }}</span></span>
+        {% if record.hours_worked %}<span class="hrs">{{ record.hours_worked }} hrs</span>{% endif %}
+      </div>
+      <div class="btn-row">
+        <button class="btn-in" id="btnIn" {% if record.sign_in_time %}disabled{% endif %}>Sign In</button>
+        <button class="btn-out" id="btnOut" {% if not record.sign_in_time or record.sign_out_time %}disabled{% endif %}>Sign Out</button>
+      </div>
+      <div class="loc-note" id="locNote">Location will catch when you clik button.</div>
+    </div>
+
+    <div class="card">
+      <div class="title">ATTENDANCE HISTORY</div>
+      <table>
+        <thead><tr><th>Date</th><th>Sign In</th><th>Sign Out</th><th>Hours</th><th>Location</th></tr></thead>
+        <tbody>
+          {% for h in history %}
+          <tr>
+            <td>{{ h.date }}</td>
+            <td>{{ h.sign_in_time|time:"H:i"|default:"--" }}</td>
+            <td>{{ h.sign_out_time|time:"H:i"|default:"--" }}</td>
+            <td>{{ h.hours_worked|default:"--" }}</td>
+            <td>{% if h.sign_in_lat %}<a class="map-link" target="_blank" href="https://maps.google.com/?q={{ h.sign_in_lat }},{{ h.sign_in_lng }}">📍 Map</a>{% else %}--{% endif %}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB: DAILY LOGBOOK -->
+  <div class="tab-panel" id="tab-logbook">
+    <a href="{% url 'field_log_create' %}" class="add-btn">+ more Logbook</a>
+    <div class="card">
+      <div class="title">DAILY LOGBOOK</div>
+      {% for log in logs %}
+        <div class="log-entry">
+          <div class="log-top">
+            <span class="log-date">{{ log.date }} &middot; {{ log.time_logged|time:"H:i" }}</span>
+            {% if log.approved %}
+              <span class="log-badge approved">approved</span>
+            {% else %}
+              <span class="log-badge pending">panding</span>
+            {% endif %}
+          </div>
+          <div class="log-text">{{ log.activity }}</div>
+          {% if log.location_name %}<div class="log-loc">📍 {{ log.location_name|truncatechars:60 }}</div>{% endif %}
+        </div>
+      {% empty %}
+        <div class="empty">Yet write logbook.</div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- TAB: WEEKLY SUMMARY -->
+  <div class="tab-panel" id="tab-weekly">
+    <div class="card">
+      <div class="title">WEEKLY SUMMARY</div>
+      {% for w in weekly_data %}
+        <div class="week-row">
+          <div>
+            <div class="week-range">{{ w.start }} &ndash; {{ w.end }}</div>
+            <div class="week-sub">{{ w.days }} day attendece</div>
+          </div>
+          <div class="week-hours">{{ w.hours }}h</div>
+        </div>
+      {% empty %}
+        <div class="empty">Yet dont weekly report.</div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- TAB: VISITS -->
+  <div class="tab-panel" id="tab-visits">
+    <div class="card">
+      <div class="title">SUPERVISOR VISITS</div>
+      {% for v in visits %}
+        <div class="visit-row">
+          <div>
+            <div class="visit-date">{{ v.visit_date }}</div>
+            {% if v.notes %}<div class="visit-notes">{{ v.notes }}</div>{% endif %}
+            <div class="visit-sup">{{ v.supervisor.name|default:"--" }}</div>
+          </div>
+          <span class="visit-badge {{ v.status }}">
+            {% if v.status == 'completed' %}Imekamilika
+            {% elif v.status == 'missed' %}Imekosekana
+            {% else %}Imepangwa{% endif %}
+          </span>
+        </div>
+      {% empty %}
+        <div class="empty">no visit yet wait for supervisor.</div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- TAB: SUPERVISOR -->
+  <div class="tab-panel" id="tab-supervisor">
+    <div class="card">
+      <div class="title">Comment from supervisor</div>
+      {% for log in logs %}
+        {% if log.supervisor_comment %}
+          <div class="comment-box">
+            <div class="txt">{{ log.supervisor_comment }}</div>
+            <div class="meta">About logbook of {{ log.date }}</div>
+          </div>
+        {% endif %}
+      {% empty %}
+        <div class="empty">yet no comment from suervisor.</div>
+      {% endfor %}
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Tab switching
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  // Attendance sign in/out
+  const btnIn = document.getElementById('btnIn');
+  const btnOut = document.getElementById('btnOut');
+  const locNote = document.getElementById('locNote');
+
+  function getCsrf() {
+    const m = document.cookie.match(/csrftoken=([^;]+)/);
+    return m ? m[1] : '';
+  }
+
+  function doAction(action, btn) {
+    btn.disabled = true;
+    locNote.textContent = 'search loaction...';
+    locNote.classList.remove('error');
+
+    if (!navigator.geolocation) {
+      locNote.textContent = 'Browser dont use location.';
+      locNote.classList.add('error');
+      btn.disabled = false;
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(function (pos) {
+      fetch('{% url "attendance_action" %}', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCsrf() },
+        body: JSON.stringify({ action: action, lat: pos.coords.latitude, lng: pos.coords.longitude })
+      })
+      .then(r => r.json())
+      .then(data => {
+        if (data.ok) {
+          if (data.sign_in) document.getElementById('signInTxt').textContent = data.sign_in;
+          if (data.sign_out) document.getElementById('signOutTxt').textContent = data.sign_out;
+          locNote.textContent = 'Imefanikiwa.';
+          if (action === 'signin') { btnOut.disabled = false; }
+          if (action === 'signout') { btnOut.disabled = true; }
+        } else {
+          locNote.textContent = data.error || 'imposible.';
+          locNote.classList.add('error');
+          btn.disabled = false;
+        }
+      });
+    }, function () {
+      locNote.textContent = 'difficult to catch location. Allow access and try Again.';
+      locNote.classList.add('error');
+      btn.disabled = false;
+    }, { enableHighAccuracy: true, timeout: 15000 });
+  }
+
+  btnIn.addEventListener('click', () => doAction('signin', btnIn));
+  btnOut.addEventListener('click', () => doAction('signout', btnOut));
+</script>
+
+</body>
+</html>

@@ -15,8 +15,11 @@ urlpatterns = [
     path('Courses/', views.Courses_view, name='Courses'),
     path('payment/', views.payment, name='payment'),
     path('results/', views.results, name='results'),
-    path('field-log/new/', views.field_log_create, name='field_log_create'),
-    path('field-log/', views.field_log_list, name='field_log_list'),
+    path('field-training/', views.field_training_hub, name='field_training_hub'),
+    path('field-training/attendance-action/', views.attendance_action, name='attendance_action'),
+    path('field-training/logs/', views.field_log_list, name='field_log_list'),
+    path('field-training/logs/add/', views.field_log_create, name='field_log_create'),
+    
 
 
 ]

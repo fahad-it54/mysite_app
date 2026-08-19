@@ -14,13 +14,16 @@ class StudentEditForm(forms.ModelForm):
         model = StudentProfile
         fields = ['student_class', 'email']
 
+class FieldTrainingLogForm(forms.ModelForm):
+    latitude = forms.FloatField(widget=forms.HiddenInput(), required=False)
+    longitude = forms.FloatField(widget=forms.HiddenInput(), required=False)
+    location_name = forms.CharField(widget=forms.HiddenInput(), required=False)
 
-class FieldLogForm(forms.ModelForm):
     class Meta:
         model = FieldTrainingLog
         fields = ['activity', 'latitude', 'longitude', 'location_name']
         widgets = {
-            'latitude': forms.HiddenInput(),
-            'longitude': forms.HiddenInput(),
-            'location_name': forms.HiddenInput(),
+            'activity': forms.Textarea(attrs={'placeholder': 'Write your day activity...'}),
         }
+
+
