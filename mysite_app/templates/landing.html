@@ -1,0 +1,77 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Karibu</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', Arial, sans-serif; }
+  body {
+    min-height:100vh; background: linear-gradient(135deg,#14524a,#2e8b74);
+    display:flex; align-items:center; justify-content:center; padding:24px 16px;
+  }
+  .wrap { max-width:420px; width:100%; text-align:center; }
+  .logo-circle {
+    width:76px; height:76px; background:#fff; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; margin:0 auto 18px;
+    box-shadow:0 10px 30px rgba(0,0,0,.2);
+  }
+  .logo-circle img { width:56px; height:56px; object-fit:contain; }
+  .wrap h1 { color:#fff; font-size:24px; margin-bottom:6px; }
+  .wrap .sub { color:rgba(255,255,255,0.8); font-size:14px; margin-bottom:32px; }
+  .option-card {
+    display:flex; align-items:center; gap:14px; background:#fff; border-radius:16px;
+    padding:18px 20px; margin-bottom:14px; text-decoration:none; text-align:left;
+    box-shadow:0 8px 24px rgba(0,0,0,.12); transition:transform .15s ease;
+  }
+  .option-card:hover { transform:translateY(-2px); }
+  .option-icon {
+    width:48px; height:48px; border-radius:12px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center; color:#fff;
+  }
+  .option-icon.apply { background:linear-gradient(135deg,#e67e22,#f4b942); }
+  .option-icon.portal { background:linear-gradient(135deg,#14524a,#2e8b74); }
+  .option-text { flex:1; }
+  .option-text .title { font-size:15px; font-weight:700; color:#16281f; margin-bottom:2px; }
+  .option-text .desc { font-size:12.5px; color:#888; }
+  .option-arrow { color:#ccc; font-size:18px; }
+  .footer-note { color:rgba(255,255,255,0.6); font-size:12px; margin-top:20px; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="logo-circle">
+    <img src="{% static 'lo.jpg' %}" alt="Logo">
+  </div>
+  <h1>Karibu</h1>
+  <p class="sub">Chagua unachotaka kufanya</p>
+
+  <a href="{% url 'apply' %}" class="option-card">
+    <div class="option-icon apply">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 2h6a1 1 0 0 1 1 1v2H8V3a1 1 0 0 1 1-1z"/><rect x="5" y="4" width="14" height="18" rx="2"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="15" y2="16"/></svg>
+    </div>
+    <div class="option-text">
+      <div class="title">Application</div>
+      <div class="desc">Omba nafasi ya masomo (kwa wageni wapya)</div>
+    </div>
+    <div class="option-arrow">›</div>
+  </a>
+
+  <a href="{% url 'login' %}" class="option-card">
+    <div class="option-icon portal">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+    </div>
+    <div class="option-text">
+      <div class="title">Student Portal</div>
+      <div class="desc">Ingia kama tayari una akaunti</div>
+    </div>
+    <div class="option-arrow">›</div>
+  </a>
+
+  <p class="footer-note">© 2026 fahad</p>
+</div>
+
+</body>
+</html>

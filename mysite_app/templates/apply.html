@@ -1,0 +1,39 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Omba Chuo</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', Arial, sans-serif; }
+  body { background:#f4f6fa; padding:24px 16px; }
+  .card { max-width:480px; margin:0 auto; background:#fff; border-radius:16px; padding:24px; box-shadow:0 1px 3px rgba(0,0,0,.05); }
+  .card h2 { font-size:20px; margin-bottom:4px; }
+  .card .sub { font-size:13px; color:#888; margin-bottom:20px; }
+
+  form p { margin:0 0 16px; }
+  form label { display:block; font-size:12px; font-weight:700; color:#3a4270; margin-bottom:6px; text-transform:uppercase; }
+  form input, form select {
+    width:100%; padding:12px 14px; border:1.5px solid #e1e5f5; border-radius:10px; font-size:14px; outline:none;
+  }
+  form input:focus, form select:focus { border-color:#3a5bd9; }
+
+  button[type="submit"] {
+    width:100%; margin-top:8px; padding:13px; border:none; border-radius:10px;
+    background:#14524a; color:#fff; font-size:15px; font-weight:600; cursor:pointer;
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <h2>Fomu ya Maombi</h2>
+    <p class="sub">Jaza taarifa zako kuomba nafasi ya masomo</p>
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Tuma Maombi</button>
+    </form>
+  </div>
+</body>
+</html>

@@ -1,5 +1,41 @@
 from django import forms
-from .models import Profile, StudentProfile, FieldTrainingLog
+from .models import Profile, StudentProfile, FieldTrainingLog, Application
+
+
+class ApplicationForm(forms.ModelForm):
+    class Meta:
+        model = Application
+        fields = ['full_name', 'email', 'phone', 'programme', 'citizenship', 'certificate']
+
+
+class RegNumberSignupForm(forms.Form):
+    reg_number = forms.CharField(label="Registration Number")
+    password1 = forms.CharField(label="Password", widget=forms.PasswordInput)
+    password2 = forms.CharField(label="Rudia Password", widget=forms.PasswordInput)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        reg_number = cleaned_data.get('reg_number')
+        password1 = cleaned_data.get('password1')
+        password2 = cleaned_data.get('password2')
+
+        if reg_number:
+            try:
+                profile = StudentProfile.objects.get(admission_number=reg_number)
+            except StudentProfile.DoesNotExist:
+                raise forms.ValidationError("Registration Number hii haipo. Hakikisha umeandika sahihi kama ulivyotumiwa.")
+
+            if profile.user.has_usable_password():
+                raise forms.ValidationError("Akaunti hii tayari ina password. Tumia ukurasa wa Login.")
+
+            cleaned_data['user'] = profile.user
+
+        if password1 and password2 and password1 != password2:
+            raise forms.ValidationError("Password hazifanani.")
+
+        return cleaned_data
+
+
 
 
 class ProfileForm(forms.ModelForm):

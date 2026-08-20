@@ -6,6 +6,9 @@ from datetime import datetime
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
+from django.core.mail import send_mail
+#import requests  # kwa SMS API
+
 
 
 
@@ -35,18 +38,8 @@ class Subject(models.Model):
 
     def __str__(self):
         return self.name
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-       current_year = datetime.now().year
-       user_profile, created =  StudentProfile.objects.get_or_create(user=instance)
-       
 
-       if not user_profile.admission_number:
-          admission_number = f"BIT{current_year}{instance.id:03d}"
 
-          user_profile.admission_number = admission_number
-          user_profile.save()
 
 class StudentProfile(models.Model):
 
@@ -90,6 +83,66 @@ class Result(models.Model):
 
     def __str__(self):
         return f"{self.student.username} - {self.subject.name}"
+
+
+class Application(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+    ]
+    full_name = models.CharField(max_length=200)
+    email = models.EmailField(unique=True)
+    phone = models.CharField(max_length=20)
+    programme = models.CharField(max_length=200)
+    citizenship = models.CharField(max_length=100, blank=True, null=True)
+    certificate = models.FileField(upload_to='applications/certificates/', blank=True, null=True)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    submitted_at = models.DateTimeField(auto_now_add=True)
+    generated_user = models.OneToOneField(User, on_delete=models.SET_NULL, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.full_name} - {self.status}"
+
+
+# ===== SIGNAL - chini kabisa, baada ya class Application =====
+
+@receiver(post_save, sender=Application)
+def create_account_on_approval(sender, instance, **kwargs):
+    if instance.status == 'approved' and not instance.generated_user:
+        current_year = datetime.now().year
+        reg_number = f"BIT{current_year}{instance.id:04d}"
+
+        new_user = User.objects.create_user(username=reg_number, email=instance.email)
+        new_user.set_unusable_password()
+        new_user.save()
+
+        student_profile, _ = StudentProfile.objects.get_or_create(user=new_user)
+        student_profile.admission_number = reg_number
+        student_profile.email = instance.email
+        student_profile.is_paid = False
+        student_profile.is_verified = False
+        student_profile.save()
+
+        instance.generated_user = new_user
+        instance.save(update_fields=['generated_user'])
+
+        send_registration_email(instance.email, instance.full_name, reg_number)
+
+
+def send_registration_email(email, name, reg_number):
+    subject = "Umekubaliwa - Registration Number yako"
+    message = (
+        f"Hongera {name}!\n\n"
+        f"Ombi lako la masomo limekubaliwa.\n\n"
+        f"Registration Number yako: {reg_number}\n\n"
+        f"Tumia namba hii kufungua akaunti yako kwenye ukurasa wa Sign Up.\n\n"
+        f"Karibu."
+    )
+    try:
+        send_mail(subject, message, None, [email], fail_silently=False)
+    except Exception as e:
+        print(f"Email haikutumwa: {e}")
 # Create your models here.
     
 

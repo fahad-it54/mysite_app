@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from .forms import ApplicationForm, RegNumberSignupForm
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
@@ -22,11 +23,24 @@ from reportlab.lib import colors
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
 import os
+from django.contrib import messages
 
 
+def apply_view(request):
+    if request.method == 'POST':
+        form = ApplicationForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('application_success')
+    else:
+        form = ApplicationForm()
+    return render(request, 'apply.html', {'form': form})
 
+def application_success(request):
+    return render(request, 'application_success.html')
 
-
+def landing_page(request):
+    return render(request, 'landing.html')
 
 # LOGIN PAGE
 def login_view(request):
@@ -59,24 +73,17 @@ def login_view(request):
 
 # SIGNUP PAGE
 def signup_view(request):
-
     if request.method == 'POST':
-
-        form = UserCreationForm(request.POST)
-
+        form = RegNumberSignupForm(request.POST)
         if form.is_valid():
-
-            form.save()
-
+            user = form.cleaned_data['user']
+            user.set_password(form.cleaned_data['password1'])
+            user.save()
+            messages.success(request, "Akaunti imekamilika. Sasa ingia.")
             return redirect('login')
-
     else:
-
-        form = UserCreationForm()
-
-    return render(request, 'signup.html', {
-        'form': form
-    })
+        form = RegNumberSignupForm()
+    return render(request, 'signup.html', {'form': form})
 
 
 # PAGE YA NDANI

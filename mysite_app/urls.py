@@ -4,9 +4,9 @@ from . import views
 from .views import payment, results
 urlpatterns = [
 
-    path('', views.login_view, name='login'),
+    #path('', views.login_view, name='login'),
 
-    path('signup/', views.signup_view, name='signup'),
+    #path('signup/', views.signup_view, name='signup'),
 
     path('dashboard/', views.dashboard, name='dashboard'),
     path("profile/edit/", edit_profile, name="edit_profile"),
@@ -20,7 +20,12 @@ urlpatterns = [
     path('field-training/logs/', views.field_log_list, name='field_log_list'),
     path('field-training/logs/add/', views.field_log_create, name='field_log_create'),
     path('exam-ticket/download/', views.exam_ticket_download, name='exam_ticket_download'),
-    
+    path('', views.landing_page, name='landing'),
+    path('apply/', views.apply_view, name='apply'),
+    path('login/', views.login_view, name='login'),
+    path('signup/', views.signup_view, name='signup'),
+    path('apply/', views.apply_view, name='apply'),
+    path('apply/success/', views.application_success, name='application_success'),
 
 
 ]
