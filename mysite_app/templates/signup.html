@@ -35,8 +35,8 @@
           <path d="M12 3 1 8l11 5 9-4.09V17h2V8L12 3zm0 8.5L4.5 8 12 4.5 19.5 8 12 11.5zM6 12.18v3.32c0 1.5 2.69 3.5 6 3.5s6-2 6-3.5v-3.32l-6 2.73-6-2.73z"/>
         </svg>
       </div>
-      <h1>Karibu</h1>
-      <p class="subtitle">Kamilisha akaunti yako</p>
+      <h1>Welecom student</h1>
+      <p class="subtitle">Complete your Account</p>
     </div>
 
     <div class="bottom">
@@ -49,11 +49,11 @@
       <form method="POST">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Fungua Akaunti</button>
+        <button type="submit">Open account</button>
       </form>
 
       <div class="login-link">
-        Tayari una akaunti? <a href="{% url 'login' %}">Ingia hapa</a>
+        Allready have account? <a href="{% url 'login' %}">sign in</a>
       </div>
     </div>
   </div>

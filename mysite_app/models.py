@@ -131,13 +131,13 @@ def create_account_on_approval(sender, instance, **kwargs):
 
 
 def send_registration_email(email, name, reg_number):
-    subject = "Umekubaliwa - Registration Number yako"
+    subject = "Approved - Your Registration Number "
     message = (
-        f"Hongera {name}!\n\n"
-        f"Ombi lako la masomo limekubaliwa.\n\n"
-        f"Registration Number yako: {reg_number}\n\n"
-        f"Tumia namba hii kufungua akaunti yako kwenye ukurasa wa Sign Up.\n\n"
-        f"Karibu."
+        f"Congratulation! {name}!\n\n"
+        f"Your application has been approved.\n\n"
+        f"Your Registration Number is: {reg_number}\n\n"
+        f"Uses this number to signup in the system.\n\n"
+        f"Welecome."
     )
     try:
         send_mail(subject, message, None, [email], fail_silently=False)

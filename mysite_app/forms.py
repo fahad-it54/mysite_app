@@ -11,7 +11,7 @@ class ApplicationForm(forms.ModelForm):
 class RegNumberSignupForm(forms.Form):
     reg_number = forms.CharField(label="Registration Number")
     password1 = forms.CharField(label="Password", widget=forms.PasswordInput)
-    password2 = forms.CharField(label="Rudia Password", widget=forms.PasswordInput)
+    password2 = forms.CharField(label="Confirm Password", widget=forms.PasswordInput)
 
     def clean(self):
         cleaned_data = super().clean()
@@ -23,15 +23,15 @@ class RegNumberSignupForm(forms.Form):
             try:
                 profile = StudentProfile.objects.get(admission_number=reg_number)
             except StudentProfile.DoesNotExist:
-                raise forms.ValidationError("Registration Number hii haipo. Hakikisha umeandika sahihi kama ulivyotumiwa.")
+                raise forms.ValidationError("Thise reg_number is absence. Please ensure carefull from ur email.")
 
             if profile.user.has_usable_password():
-                raise forms.ValidationError("Akaunti hii tayari ina password. Tumia ukurasa wa Login.")
+                raise forms.ValidationError("Thise Account Allready have a passward. Use to Login.")
 
             cleaned_data['user'] = profile.user
 
         if password1 and password2 and password1 != password2:
-            raise forms.ValidationError("Password hazifanani.")
+            raise forms.ValidationError("Password not same.")
 
         return cleaned_data
 

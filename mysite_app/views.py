@@ -79,7 +79,7 @@ def signup_view(request):
             user = form.cleaned_data['user']
             user.set_password(form.cleaned_data['password1'])
             user.save()
-            messages.success(request, "Akaunti imekamilika. Sasa ingia.")
+            messages.success(request, "complete. signin now.")
             return redirect('login')
     else:
         form = RegNumberSignupForm()

@@ -27,12 +27,12 @@
 </head>
 <body>
   <div class="card">
-    <h2>Fomu ya Maombi</h2>
-    <p class="sub">Jaza taarifa zako kuomba nafasi ya masomo</p>
+    <h2>Form of Application</h2>
+    <p class="sub">Fill your deteil to apply the chance of study</p>
     <form method="POST" enctype="multipart/form-data">
       {% csrf_token %}
       {{ form.as_p }}
-      <button type="submit">Tuma Maombi</button>
+      <button type="submit">Send</button>
     </form>
   </div>
 </body>
