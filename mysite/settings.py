@@ -150,7 +150,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'fahadmohameda996@gmail.com'
-EMAIL_HOST_PASSWORD = 'aarb odax djbj smtg'  # ile App Password bila nafasi
+EMAIL_HOST_PASSWORD = 'aarbodaxdjbjsmtg'  
 DEFAULT_FROM_EMAIL = 'fahad Admissions <fahadmohameda996@gmail.com>'
 
 

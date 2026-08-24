@@ -140,9 +140,15 @@ def send_registration_email(email, name, reg_number):
         f"Welecome."
     )
     try:
-        send_mail(subject, message, None, [email], fail_silently=False)
+        send_mail(subject=subject, 
+                  message=message, 
+                  from_email=None,
+                  recipient_list=[email], 
+                  fail_silently=False,
+
+                  )
     except Exception as e:
-        print(f"Email haikutumwa: {e}")
+        print(f"Failed to send email: {e}")
 # Create your models here.
     
 
