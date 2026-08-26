@@ -7,6 +7,8 @@ from django.db import models
 from django.conf import settings
 from django.utils import timezone
 from django.core.mail import send_mail
+import resend
+from django.conf import settings
 #import requests  # kwa SMS API
 
 
@@ -131,24 +133,27 @@ def create_account_on_approval(sender, instance, **kwargs):
 
 
 def send_registration_email(email, name, reg_number):
-    subject = "Approved - Your Registration Number "
-    message = (
-        f"Congratulation! {name}!\n\n"
-        f"Your application has been approved.\n\n"
-        f"Your Registration Number is: {reg_number}\n\n"
-        f"Uses this number to signup in the system.\n\n"
-        f"Welecome."
-    )
-    try:
-        send_mail(subject=subject, 
-                  message=message, 
-                  from_email=None,
-                  recipient_list=[email], 
-                  fail_silently=False,
+    resend.api_key = settings.RESEND_API_KEY
 
-                  )
+    html_content = f"""
+    <div style="font-family: Arial, sans-serif; padding: 20px;">
+        <h2 style="color:#14524a;">Hongera {name}!</h2>
+        <p>Ombi lako la masomo limekubaliwa.</p>
+        <p style="font-size:18px;"><b>Registration Number yako:</b> {reg_number}</p>
+        <p>Tumia namba hii kufungua akaunti yako kwenye ukurasa wa Sign Up.</p>
+        <p>Karibu.</p>
+    </div>
+    """
+
+    try:
+        resend.Emails.send({
+            "from": "SUZA Admissions <onboarding@resend.dev>",
+            "to": [email],
+            "subject": "Umekubaliwa - Registration Number yako",
+            "html": html_content,
+        })
     except Exception as e:
-        print(f"Failed to send email: {e}")
+        print(f"Email haikutumwa: {e}")
 # Create your models here.
     
 
