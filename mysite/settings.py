@@ -145,7 +145,7 @@ USE_X_FORWARDED_HOST = True
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 465
 EMAIL_USE_TLS = False 
