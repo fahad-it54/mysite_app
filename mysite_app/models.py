@@ -113,7 +113,7 @@ class Application(models.Model):
 def create_account_on_approval(sender, instance, **kwargs):
     if instance.status == 'approved' and not instance.generated_user:
         current_year = datetime.now().year
-        reg_number = f"BIT{current_year}{instance.id:04d}"
+        reg_number = f"BIT{current_year}{instance.id:03d}"
 
         new_user = User.objects.create_user(username=reg_number, email=instance.email)
         new_user.set_unusable_password()
@@ -137,19 +137,19 @@ def send_registration_email(email, name, reg_number):
 
     html_content = f"""
     <div style="font-family: Arial, sans-serif; padding: 20px;">
-        <h2 style="color:#14524a;">Hongera {name}!</h2>
-        <p>Ombi lako la masomo limekubaliwa.</p>
-        <p style="font-size:18px;"><b>Registration Number yako:</b> {reg_number}</p>
-        <p>Tumia namba hii kufungua akaunti yako kwenye ukurasa wa Sign Up.</p>
-        <p>Karibu.</p>
+        <h2 style="color:#14524a;">Congratulation {name}!</h2>
+        <p>Your Application has been Approved.</p>
+        <p style="font-size:18px;"><b> Youe Registration is :</b> {reg_number}</p>
+        <p>Uses this reg_no to complete regstration and  Sign Up.</p>
+        <p>Welcome.</p>
     </div>
     """
 
     try:
         resend.Emails.send({
-            "from": "SUZA Admissions <onboarding@resend.dev>",
+            "from": "FAHAD Admissions <onboarding@resend.dev>",
             "to": [email],
-            "subject": "Umekubaliwa - Registration Number yako",
+            "subject": "Your Approved - Your Registration is",
             "html": html_content,
         })
     except Exception as e:
