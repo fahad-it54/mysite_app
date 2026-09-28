@@ -133,25 +133,25 @@ def create_account_on_approval(sender, instance, **kwargs):
 
 
 def send_registration_email(email, name, reg_number):
-    resend.api_key = settings.RESEND_API_KEY
-
     html_content = f"""
     <div style="font-family: Arial, sans-serif; padding: 20px;">
         <h2 style="color:#14524a;">Congratulations {name}!</h2>
-        <p>Your Application has been Approved.</p>
-        <p style="font-size:18px;"><b> You Registration is :</b> {reg_number}</p>
-        <p>Uses this reg_no to complete regstration and  Sign Up.</p>
+        <p>Your application has been approved.</p>
+        <p style="font-size:18px;"><b>Your Registration is:</b> {reg_number}</p>
+        <p>Use this reg number to complete registration and sign up.</p>
         <p>Welcome.</p>
     </div>
     """
 
     try:
-        resend.Emails.send({
-            "from": "FAHAD Admissions <onboarding@resend.dev>",
-            "to": [email],
-            "subject": "Your Approved - Your Registration is",
-            "html": html_content,
-        })
+        send_mail(
+            subject="You're Approved - Your Registration Number",
+            message=f"Congratulations {name}! Your registration number is {reg_number}.",
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[email],
+            html_message=html_content,
+            fail_silently=False,
+        )
     except Exception as e:
         print(f"Email haikutumwa: {e}")
 # Create your models here.
