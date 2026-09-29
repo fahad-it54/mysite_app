@@ -146,19 +146,9 @@ CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
 
-RESEND_API_KEY = os.environ.get('RESEND_API_KEY')
-
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 465
-EMAIL_TIMEOUT = 10
-EMAIL_USE_TLS = False 
-EMAIL_USE_SSL = True
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER','fahadmohameda996@gmail.com')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')  
-DEFAULT_FROM_EMAIL = 'fahad Admissions <fahadmohameda996@gmail.com>'
-
-
+MAILJET_API_KEY = "2016379988ded2910d17c6babef305e5"
+MAILJET_SECRET_KEY = "f217d45379104fbb66536133599d6f9c"
+MAILJET_SENDER_EMAIL = "fahadmohameda996@gmail.com"
 
 
 

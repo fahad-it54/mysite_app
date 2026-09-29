@@ -8,6 +8,7 @@ from django.conf import settings
 from django.utils import timezone
 from django.core.mail import send_mail
 import resend
+import requests
 from django.conf import settings
 #import requests  # kwa SMS API
 
@@ -144,14 +145,31 @@ def send_registration_email(email, name, reg_number):
     """
 
     try:
-        send_mail(
-            subject="You're Approved - Your Registration Number",
-            message=f"Congratulations {name}! Your registration number is {reg_number}.",
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[email],
-            html_message=html_content,
-            fail_silently=False,
+        response = requests.post(
+            "https://api.mailjet.com/v3.1/send",
+            auth=(settings.MAILJET_API_KEY, settings.MAILJET_SECRET_KEY),
+            json={
+                "Messages": [
+                    {
+                        "From": {
+                            "Email": settings.MAILJET_SENDER_EMAIL,
+                            "Name": "FAHAD Admissions",
+                        },
+                        "To": [
+                            {
+                                "Email": email,
+                                "Name": name,
+                            }
+                        ],
+                        "Subject": "You're Approved - Your Registration Number",
+                        "HTMLPart": html_content,
+                    }
+                ]
+            },
+            timeout=10,
         )
+        response.raise_for_status()
+        print(f"Email imetumwa kwa {email}: status {response.status_code}")
     except Exception as e:
         print(f"Email haikutumwa: {e}")
 # Create your models here.
